@@ -11,6 +11,14 @@ return {
   ---@module "neo-tree"
   ---@type neotree.Config?
   opts = {
+	filesystem = {
+		filtered_items = {
+			visible = true
+		},
+		visible = true,
+		hide_dotfiles = false,
+		hide_gitignored = false
+	}
     -- fill any relevant options here
-  } 
+  }
 }

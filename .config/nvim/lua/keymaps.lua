@@ -41,7 +41,7 @@ vim.keymap.set('v', 'f', '<cmd>HopWord<cr>', { noremap = true })
 vim.keymap.set('n', '<A-1>', '<cmd>HopWord<cr>', { noremap = true })
 
 -- Telescope
-vim.keymap.set('n', '<M-p>', ':Telescope find_files <cr>')
+vim.keymap.set('n', '<M-p>', ':Telescope find_files hidden=true no_ignore=true <cr>')
 vim.keymap.set('n', '<M-F>', ':Telescope live_grep search_dirs=. <cr>')
 vim.keymap.set('n', '<M-f>', ':Telescope live_grep search_dirs={vim.fn.expand("%:p")} <cr>')
 vim.keymap.set('n', '<leader>b', ':Telescope buffers <cr>')
