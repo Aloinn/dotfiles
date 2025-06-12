@@ -1,0 +1,127 @@
+[window]
+
+opacity = 1
+
+padding.x = 10
+padding.y = 10
+
+decorations = "Full"
+decorations_theme_variant = "Dark" # "Dark"
+
+[font]
+
+normal.family = "ComicShannsMono Nerd Font Propo"
+bold.family = "ComicShannsMono Nerd Font Propo"
+italic.family = "ComicShannsMono Nerd Font Propo"
+bold_italic.family = "ComicShannsMono Nerd Font Propo"
+
+size = 14.0
+
+# Default colors
+[colors.primary]
+background = '#2d353b'
+foreground = '#d3c6aa'
+
+# Normal colors
+[colors.normal]
+black = '#475258'
+red = '#e67e80'
+green = '#a7c080'
+yellow = '#dbbc7f'
+blue = '#7fbbb3'
+magenta = '#d699b6'
+cyan = '#83c092'
+white = '#d3c6aa'
+
+# Bright colors
+[colors.bright]
+black = '#475258'
+red = '#e67e80'
+green = '#a7c080'
+yellow = '#dbbc7f'
+blue = '#7fbbb3'
+magenta = '#d699b6'
+cyan = '#83c092'
+white = '#d3c6aa'
+
+[[keyboard.bindings]]
+key = "Left"
+mods = "Alt"
+chars = "\u001bb"  # ESC+b → Move one word left in most shells/editors
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Alt"
+chars = "\u001bf"  # ESC+f → Move one word right
+
+[[keyboard.bindings]]
+key = "P"
+mods = "Command"
+action = "ReceiveChar"
+
+[[keyboard.bindings]]
+key = "R"
+mods = "Command"
+chars = "ReceiveChar"
+
+[[keyboard.bindings]]
+key = "f"
+mods = "Command"
+chars = "\u001bf"
+
+[[keyboard.bindings]]
+key = "E"
+mods = "Command"
+chars = "\u001be"
+
+# TMUX
+[[keyboard.bindings]]
+key = "N"
+mods = "Command"
+action = "SpawnNewInstance"
+
+[[keyboard.bindings]]
+key = "T"
+mods = "Command"
+chars = "\u0002\""
+
+[[keyboard.bindings]]
+key = "T"
+mods = "Command|Shift"
+chars = "\u0002%"
+
+[[keyboard.bindings]]
+key = "H"
+mods = "Command"
+chars = "\u0002h"
+
+[[keyboard.bindings]]
+key = "J"
+mods = "Command"
+chars = "\u0002j"
+
+[[keyboard.bindings]]
+key = "K"
+mods = "Command"
+chars = "\u0002k"
+
+[[keyboard.bindings]]
+key = "L"
+mods = "Command"
+chars = "\u0002l"
+
+[[keyboard.bindings]]
+key = "W"
+mods = "Command"
+chars = "\u0002x"
+
+[[keyboard.bindings]]
+key = "R"
+mods = "Command"
+chars = "\u0002r"
+
+[[keyboard.bindings]]
+key = "I"
+mods = "Command"
+chars = "\u0002I"
+
