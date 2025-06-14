@@ -431,6 +431,9 @@ return {
         enabled = vim.fn.executable("make") == 1,
         build = "make",
       },
+      {
+        "phaazon/telescope-hop.nvim",
+      }
     },
     cmd = "Telescope",
     opts = function()
@@ -442,8 +445,12 @@ return {
           ["<C-k>"] = actions.move_selection_previous,
           ["<ESC>"] = actions.close,
           ["<C-c>"] = false,
+          ["<D-/>"] = require("telescope").extensions.hop.hop,  -- hop.hop_toggle_selection
         },
-        n = { ["q"] = actions.close },
+        n = {
+          ["q"] = actions.close,
+          ["<D-/>"] = require("telescope").extensions.hop.hop,  -- hop.hop_toggle_selection
+        },
       }
       return {
         defaults = {
@@ -467,6 +474,13 @@ return {
           mappings = mappings,
         },
         extensions = {
+          hop = {
+            mappings = {
+              i = {
+
+              },
+            },
+          },
           undo = {
             use_delta = true,
             side_by_side = true,
@@ -495,6 +509,8 @@ return {
       if utils.is_available("nvim-notify") then telescope.load_extension("notify") end
       if utils.is_available("telescope-fzf-native.nvim") then telescope.load_extension("fzf") end
       if utils.is_available("telescope-undo.nvim") then telescope.load_extension("undo") end
+      telescope.load_extension("hop")
+      -- if utils.is_available("telescope-hop.nvim") then telescope.load_extension("hop") end
       if utils.is_available("project.nvim") then telescope.load_extension("projects") end
       if utils.is_available("LuaSnip") then telescope.load_extension("luasnip") end
       if utils.is_available("aerial.nvim") then telescope.load_extension("aerial") end
