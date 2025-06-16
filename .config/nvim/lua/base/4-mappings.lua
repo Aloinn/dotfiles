@@ -950,26 +950,44 @@ vim.keymap.set("n", "<D-p>", my_find_files) -- you can then bind this to whateve
     end,
     desc = "Find themes",
   }
-  maps.n["<D-F>"] = {
-    function()
-      require("telescope.builtin").live_grep({
-        additional_args = function(args)
-          args.additional_args = { "--hidden", "--no-ignore" }
-          return args.additional_args
-        end,
-      })
-    end,
-    desc = "Find words in project",
-  }
-  maps.n["<D-f>"] = {
-    function()
-      require("telescope.builtin").live_grep({
-        grep_open_files=true
-      })
-    end,
-    desc = "Find words in project",
-  }
-  -- maps.n["<leader>ff"] = {
+
+
+  local my_find_text
+  my_find_text = function(opts, full)
+    opts = opts or {}
+    full = vim.F.if_nil(full, false)
+    opts.attach_mappings = function(_, map)
+      map({ "n", "i" }, "<D-f>", function(prompt_bufnr) -- <C-h> to toggle modes
+        local prompt = require("telescope.actions.state").get_current_line()
+        require("telescope.actions").close(prompt_bufnr)
+        full = not full
+        my_find_text({ default_text = prompt }, full)
+      end)
+      return true
+    end
+
+    if full then
+      opts.additional_args = {
+        '--no-ignore', '--hidden'
+      }
+      opts.prompt_title = "Find Text <ALL FILES>"
+      require("telescope.builtin").live_grep(opts)
+    else
+      opts.prompt_title = "Find Text"
+      opts.grep_open_files = true
+      require("telescope.builtin").live_grep(opts)
+    end
+  end
+  -- maps.n["<D-F>"] = {
+  --   function() my_find_text({}, true) end,
+  --   desc = "Find words in project",
+  -- }
+  vim.keymap.set("n", "<D-f>", my_find_text) -- you can then bind this to whatever you want
+
+  -- maps.n["<D-f>"] = {
+    -- function() my_find_text() end,
+    -- desc = "Find words in project",
+  -- }-- maps.n["<leader>ff"] = {
   --   function()
   --     require("telescope.builtin").live_grep({
   --       additional_args = function(args)
