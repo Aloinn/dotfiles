@@ -28,7 +28,7 @@ vim.opt.linebreak = true -- Wrap lines at 'breakat'.
 vim.opt.number = true -- Show numberline.
 vim.opt.preserveindent = true -- Preserve indent structure as much as possible.
 vim.opt.pumheight = 10 -- Height of the pop up menu.
-vim.opt.relativenumber = false -- Show relative numberline.
+vim.opt.relativenumber = true -- Show relative numberline.
 vim.opt.shiftwidth = 2 -- Number of space inserted for indentation.
 vim.opt.showmode = false -- Disable showing modes in command line.
 vim.opt.showtabline = 2 -- always display tabline.
@@ -52,7 +52,8 @@ vim.opt.colorcolumn = "80" -- PEP8 like character limit vertical bar.
 vim.opt.mousescroll = "ver:1,hor:0" -- Disables hozirontal scroll in neovim.
 vim.opt.guicursor = "n:blinkon200,i-ci-ve:ver25" -- Enable cursor blink.
 vim.opt.autochdir = true -- Use current file dir as working dir (See project.nvim).
-vim.opt.scrolloff = 1000 -- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
+vim.opt.scrolloff = 10
+-- Number of lines to leave before/after the cursor when scrolling. Setting a high value keep the cursor centered.
 vim.opt.sidescrolloff = 8 -- Same but for side scrolling.
 vim.opt.selection = "old" -- Don't select the newline symbol when using <End> on visual mode.
 

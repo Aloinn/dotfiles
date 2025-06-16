@@ -469,7 +469,7 @@ return {
             },
             width = 0.87,
             height = 0.80,
-            preview_cutoff = 120,
+            preview_cutoff = 0,
           },
           mappings = mappings,
         },
@@ -721,12 +721,19 @@ return {
 
     opts_extend = { "disable.ft", "disable.bt" },
     opts = {
-      preset = "classic", -- "classic", "modern", or "helix"
+      preset = "helix", -- "classic", "modern", or "helix"
       icons = {
         group = (vim.g.fallback_icons_enabled and "+") or "",
         rules = false,
         separator = "-",
       },
+    },
+    plugins = {
+      presets = {
+        operators = false,
+        motions = false,
+
+      }
     },
     config = function(_, opts)
       require("which-key").setup(opts)

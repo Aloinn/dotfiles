@@ -28,7 +28,9 @@
 local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 
 return {
-
+  {
+    "gbprod/cutlass.nvim",
+  },
   -- [yazi] file browser
   -- https://github.com/mikavilpas/yazi.nvim
   -- Make sure you have yazi installed on your system!
