@@ -175,32 +175,34 @@ return {
   -- NOTE: Let's use our fork until they merge pull request
   --       https://github.com/nvim-java/nvim-java/pull/376
   {
-    "zeioth/nvim-java",
+    -- "zeioth/nvim-java",
+    "mfussenegger/nvim-jdtls",
     ft = { "java" },
     dependencies = {
       "MunifTanjim/nui.nvim",
       "neovim/nvim-lspconfig",
-      "mfussenegger/nvim-dap",
+      -- "mfussenegger/nvim-dap",
       "mason-org/mason.nvim",
     },
-    opts = {
-      notifications = {
-        dap = false,
-      },
-      -- NOTE: One of these files must be in your project root directory.
-      --       Otherwise the debugger will end in the wrong directory and fail.
-      root_markers = {
-        'settings.gradle',
-        'settings.gradle.kts',
-        'pom.xml',
-        'build.gradle',
-        'mvnw',
-        'gradlew',
-        'build.gradle',
-        'build.gradle.kts',
-        '.git',
-      },
-    },
+    config = function() require("base.utils.jdtls") end
+    -- opts = {
+    --   notifications = {
+    --     dap = false,
+    --   },
+    --   -- NOTE: One of these files must be in your project root directory.
+    --   --       Otherwise the debugger will end in the wrong directory and fail.
+    --   root_markers = {
+    --     'settings.gradle',
+    --     'settings.gradle.kts',
+    --     'pom.xml',
+    --     'build.gradle',
+    --     'mvnw',
+    --     'gradlew',
+    --     'build.gradle',
+    --     'build.gradle.kts',
+    --     '.git',
+    --   },
+    -- },
   },
 
   --  nvim-lspconfig [lsp configs]
@@ -209,7 +211,8 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = "User BaseFile",
-    dependencies = "zeioth/nvim-java",
+    dependencies = "mfussenegger/nvim-jdtls"
+    -- dependencies = "zeioth/nvim-java",
   },
 
   -- mason-lspconfig [auto start lsp]
@@ -248,7 +251,7 @@ return {
     },
     opts = {
       registries = {
-        "github:nvim-java/mason-registry",
+        -- "github:nvim-java/mason-registry",
         "github:mason-org/mason-registry",
       },
       ui = {
@@ -404,7 +407,7 @@ return {
         { path = "nvim-treesitter-textobjects", mods = { "nvim-treesitter", "nvim-treesitter-textobjects" } },
         { path = "markdown.nvim", mods = { "render-markdown" } },
         { path = "nvim-highlight-colors", mods = { "nvim-highlight-colors" } },
-        { path = "nvim-java", mods = { "java" } },
+        -- { path = "nvim-java", mods = { "java" } },
         { path = "nvim-lspconfig", mods = { "lspconfig" } },
         { path = "mason-lspconfig.nvim", mods = { "mason-lspconfig" } },
         { path = "mason.nvim", mods = { "mason", "mason-core", "mason-registry", "mason-vendor" } },

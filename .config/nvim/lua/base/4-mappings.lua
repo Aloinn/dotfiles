@@ -70,19 +70,19 @@ local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 
 -- icons displayed on which-key.nvim ---------------------------------------
 local icons = {
-  f = { desc = get_icon("Find", true) .. " Find" },
-  p = { desc = get_icon("Packages", true) .. " Packages" },
-  l = { desc = get_icon("LSP", true) .. " LSP" },
-  u = { desc = get_icon("UI", true) .. " UI" },
-  b = { desc = get_icon("Buffer", true) .. " Buffers" },
-  bs = { desc = get_icon("Sort", true) .. " Sort Buffers" },
-  c = { desc = get_icon("Run", true) .. " Compiler" },
-  d = { desc = get_icon("Debugger", true) .. " Debugger" },
-  tt = { desc = get_icon("Test", true) .. " Test" },
-  dc = { desc = get_icon("Docs", true) .. " Docs" },
-  g = { desc = get_icon("Git", true) .. " Git" },
-  S = { desc = get_icon("Session", true) .. " Session" },
-  t = { desc = get_icon("Terminal", true) .. " Terminal" },
+f = { desc = get_icon("Find", true) .. " Find" },
+p = { desc = get_icon("Packages", true) .. " Packages" },
+l = { desc = get_icon("LSP", true) .. " LSP" },
+u = { desc = get_icon("UI", true) .. " UI" },
+b = { desc = get_icon("Buffer", true) .. " Buffers" },
+bs = { desc = get_icon("Sort", true) .. " Sort Buffers" },
+c = { desc = get_icon("Run", true) .. " Compiler" },
+d = { desc = get_icon("Debugger", true) .. " Debugger" },
+tt = { desc = get_icon("Test", true) .. " Test" },
+dc = { desc = get_icon("Docs", true) .. " Docs" },
+g = { desc = get_icon("Git", true) .. " Git" },
+S = { desc = get_icon("Session", true) .. " Session" },
+t = { desc = get_icon("Terminal", true) .. " Terminal" },
 }
 
 -- standard Operations -----------------------------------------------------
@@ -98,6 +98,8 @@ maps.n["<leader>n"] = { "<cmd>enew<cr>", desc = "New file" }
 maps.n["<Leader>/"] = { "gcc", remap = true, desc = "Toggle comment line" }
 maps.x["<Leader>/"] = { "gc", remap = true, desc = "Toggle comment" }
 maps.n["<D-/>"] = { "gcc", remap = true, desc = "Toggle comment line" }
+maps.n["<M-/>"] = { "gcc", remap = true, desc = "Toggle comment line" }
+maps.x["<D-/>"] = { "gc", remap = true, desc = "Toggle comment" }
 maps.x["<D-/>"] = { "gc", remap = true, desc = "Toggle comment" }
 maps.n["gx"] =
 { utils.open_with_program, desc = "Open the file under cursor with a program" }
@@ -633,7 +635,7 @@ if is_available("vim-fugitive") then
 end
 -- git client
 if vim.fn.executable "lazygit" == 1 then -- if lazygit exists, show it
-  maps.n["<D-g>"] = {
+  toggle_git = {
     function()
       local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
       if git_dir ~= "" then
@@ -643,17 +645,8 @@ if vim.fn.executable "lazygit" == 1 then -- if lazygit exists, show it
       end
     end,
   }
-  maps.n["<leader>gg"] = {
-    function()
-      local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
-      if git_dir ~= "" then
-        vim.cmd("TermExec cmd='lazygit && exit'")
-      else
-        utils.notify("Not a git repository", vim.log.levels.WARN)
-      end
-    end,
-    desc = "ToggleTerm lazygit",
-  }
+  maps.n["<D-g>"] = toggle_git
+  maps.n["<M-g>"] = toggle_git
 end
 if vim.fn.executable "gitui" == 1 then -- if gitui exists, show it
   maps.n["<leader>gg"] = {
@@ -685,8 +678,10 @@ end
 
 -- neotree
 if is_available("neo-tree.nvim") then
-  maps.n["<D-e>"] = { "<cmd>Neotree toggle<cr>", desc = "Neotree" }
-  maps.n["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Neotree" }
+  toggle_ntree = { "<cmd>Neotree toggle<cr>", desc = "Neotree" }
+  maps.n["<D-e>"] = toggle_ntree
+  maps.n["<M-e>"] = toggle_ntree
+  maps.n["<leader>e"] = toggle_ntree
 end
 
 -- session manager ---------------------------------------------------------
@@ -867,14 +862,14 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find nvim config files",
   }
-  maps.n["<D-b>"] = {
+  toggle_buffers = {
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
-  maps.n["<leader>fB"] = {
-    function() require("telescope.builtin").buffers() end,
-    desc = "Find buffers",
-  }
+  maps.n["<D-b>"] = toggle_buffers
+  maps.n["<M-b>"] = toggle_buffers
+  maps.n["<leader>fB"] = toggle_buffers
+
   maps.n["<leader>fw"] = {
     function() require("telescope.builtin").grep_string() end,
     desc = "Find word under cursor in project",
@@ -885,12 +880,14 @@ my_find_files = function(opts, no_ignore)
   opts = opts or {}
   no_ignore = vim.F.if_nil(no_ignore, false)
   opts.attach_mappings = function(_, map)
-    map({ "n", "i" }, "<D-p>", function(prompt_bufnr) -- <C-h> to toggle modes
+    telescope_switch = function(prompt_bufnr) -- <C-h> to toggle modes
       local prompt = require("telescope.actions.state").get_current_line()
       require("telescope.actions").close(prompt_bufnr)
       no_ignore = not no_ignore
       my_find_files({ default_text = prompt }, no_ignore)
-    end)
+    end
+    map({ "n", "i" }, "<D-p>", telescope_switch)
+    map({ "n", "i" }, "<M-p>", telescope_switch)
     return true
   end
 
@@ -905,8 +902,14 @@ my_find_files = function(opts, no_ignore)
   end
 end
 
-vim.keymap.set("n", "<D-p>", my_find_files) -- you can then bind this to whatever you want
-
+  maps.n["<M-p>"] = {
+    my_find_files,
+    desc = "Find files"
+  }
+  maps.n["<D-p>"] = {
+    my_find_files,
+    desc = "Find files"
+  }
   -- maps.n["<D-p>"] = {
   --    function() require("telescope.builtin").find_files() end,
   --    desc = "Find files (no hidden)",
@@ -957,12 +960,14 @@ vim.keymap.set("n", "<D-p>", my_find_files) -- you can then bind this to whateve
     opts = opts or {}
     full = vim.F.if_nil(full, false)
     opts.attach_mappings = function(_, map)
-      map({ "n", "i" }, "<D-f>", function(prompt_bufnr) -- <C-h> to toggle modes
+      telescope_switch = function(prompt_bufnr) -- <C-h> to toggle modes
         local prompt = require("telescope.actions.state").get_current_line()
         require("telescope.actions").close(prompt_bufnr)
         full = not full
         my_find_text({ default_text = prompt }, full)
-      end)
+      end
+      map({ "n", "i" }, "<D-f>", telescope_switch)
+      map({ "n", "i" }, "<M-f>", telescope_switch)
       return true
     end
 
@@ -978,11 +983,15 @@ vim.keymap.set("n", "<D-p>", my_find_files) -- you can then bind this to whateve
       require("telescope.builtin").live_grep(opts)
     end
   end
-  -- maps.n["<D-F>"] = {
-  --   function() my_find_text({}, true) end,
-  --   desc = "Find words in project",
-  -- }
-  vim.keymap.set("n", "<D-f>", my_find_text) -- you can then bind this to whatever you want
+  maps.n["<D-f>"] = {
+    my_find_text,
+    desc = "Find words in project",
+  }
+  maps.n["<M-f>"] = {
+    my_find_text,
+    desc = "Find words in project",
+  }
+  -- vim.keymap.set("n", "<D-f>", my_find_text) -- you can then bind this to whatever you want
 
   -- maps.n["<D-f>"] = {
     -- function() my_find_text() end,
@@ -1125,7 +1134,8 @@ if is_available("toggleterm.nvim") then
     desc = "Toggleterm vertical split",
   }
   maps.n["<F7>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
-  maps.n["<D-T>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
+  maps.n["<D-t>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
+  maps.n["<M-t>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
   maps.t["<F7>"] = maps.n["<F7>"]
   maps.n["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>
   maps.t["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>

@@ -432,7 +432,7 @@ return {
         build = "make",
       },
       {
-        "phaazon/telescope-hop.nvim",
+        "nvim-telescope/telescope-hop.nvim",
       }
     },
     cmd = "Telescope",
