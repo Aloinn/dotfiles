@@ -418,7 +418,10 @@ return {
   --  https://github.com/nvim-telescope/telescope-fzf-native.nvim
   --  https://github.com/debugloop/telescope-undo.nvim
   --  NOTE: Normally, plugins that depend on Telescope are defined separately.
-  --  But its Telescope extension is added in the Telescope 'config' section.
+  --  But its Telescope extension is added in the Telescope 'config' section.i
+  -- {
+    -- dir = "~/dotfiles/.config/nvim/lua/plugins/pickers.lua",
+  -- },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -433,7 +436,7 @@ return {
       },
       {
         "nvim-telescope/telescope-hop.nvim",
-      }
+      },
     },
     cmd = "Telescope",
     opts = function()
@@ -457,7 +460,8 @@ return {
           prompt_prefix = get_icon("PromptPrefix") .. " ",
           selection_caret = get_icon("PromptPrefix") .. " ",
           multi_icon = get_icon("PromptPrefix") .. " ",
-          path_display = { "truncate" },
+          path_display = { shorten = 1 },
+          fname_width = 10,
           sorting_strategy = "ascending",
           layout_config = {
             horizontal = {

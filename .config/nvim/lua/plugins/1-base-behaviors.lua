@@ -305,10 +305,10 @@ return {
         buffers = {
           show_unloaded = true
         },
-        sources = { "filesystem", "buffers", "git_status" },
+        sources = { "filesystem", },
         source_selector = {
-          winbar = true,
-          content_layout = "center",
+          -- winbar = true,
+          -- content_layout = "center",
           sources = {
             {
               source = "filesystem",
@@ -466,6 +466,8 @@ return {
             handler = function(_) vim.opt_local.signcolumn = "auto" end,
           },
         },
+    -- separator = { left = "/", right = "\\", override = nil }, :w
+        --
       }
     end,
   },

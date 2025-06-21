@@ -46,3 +46,4 @@ load_sources({
 })
 load_colorscheme("everforest")
 load_sources_async({ "base.4-mappings" })
+require("configs.lsp")

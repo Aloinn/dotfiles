@@ -26,7 +26,7 @@
 --       -> cmp-luasnip                    [auto completion snippets]
 
 local utils = require("base.utils")
-local utils_lsp = require("base.utils.lsp")
+local utils_lsp = require("configs.lsp")
 
 return {
   --  TREE SITTER ---------------------------------------------------------
@@ -174,95 +174,95 @@ return {
   -- Reliable jdtls support. Must go before mason-lspconfig and lsp-config.
   -- NOTE: Let's use our fork until they merge pull request
   --       https://github.com/nvim-java/nvim-java/pull/376
-  {
-    -- "zeioth/nvim-java",
-    "mfussenegger/nvim-jdtls",
-    ft = { "java" },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "neovim/nvim-lspconfig",
-      -- "mfussenegger/nvim-dap",
-      "mason-org/mason.nvim",
-    },
-    config = function() require("base.utils.jdtls") end
-    -- opts = {
-    --   notifications = {
-    --     dap = false,
-    --   },
-    --   -- NOTE: One of these files must be in your project root directory.
-    --   --       Otherwise the debugger will end in the wrong directory and fail.
-    --   root_markers = {
-    --     'settings.gradle',
-    --     'settings.gradle.kts',
-    --     'pom.xml',
-    --     'build.gradle',
-    --     'mvnw',
-    --     'gradlew',
-    --     'build.gradle',
-    --     'build.gradle.kts',
-    --     '.git',
-    --   },
-    -- },
-  },
-
-  --  nvim-lspconfig [lsp configs]
-  --  https://github.com/neovim/nvim-lspconfig
-  --  This plugin provide default configs for the lsp servers available on mason.
-  {
-    "neovim/nvim-lspconfig",
-    event = "User BaseFile",
-    dependencies = "mfussenegger/nvim-jdtls"
-    -- dependencies = "zeioth/nvim-java",
-  },
+  -- {
+  --   -- "zeioth/nvim-java",
+  --   "mfussenegger/nvim-jdtls",
+  --   ft = { "java" },
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "neovim/nvim-lspconfig",
+  --     -- "mfussenegger/nvim-dap",
+  --     "mason-org/mason.nvim",
+  --   },
+  --   config = function() require("base.utils.jdtls") end
+  --   -- opts = {
+  --   --   notifications = {
+  --   --     dap = false,
+  --   --   },
+  --   --   -- NOTE: One of these files must be in your project root directory.
+  --   --   --       Otherwise the debugger will end in the wrong directory and fail.
+  --   --   root_markers = {
+  --   --     'settings.gradle',
+  --   --     'settings.gradle.kts',
+  --   --     'pom.xml',
+  --   --     'build.gradle',
+  --   --     'mvnw',
+  --   --     'gradlew',
+  --   --     'build.gradle',
+  --   --     'build.gradle.kts',
+  --   --     '.git',
+  --   --   },
+  --   -- },
+  -- },
+  --
+  -- --  nvim-lspconfig [lsp configs]
+  -- --  https://github.com/neovim/nvim-lspconfig
+  -- --  This plugin provide default configs for the lsp servers available on mason.
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   event = "User BaseFile",
+  --   dependencies = "mfussenegger/nvim-jdtls"
+  --   -- dependencies = "zeioth/nvim-java",
+  -- },
 
   -- mason-lspconfig [auto start lsp]
   -- https://github.com/mason-org/mason-lspconfig.nvim
   -- This plugin auto starts the lsp servers installed by Mason
   -- every time Neovim trigger the event FileType.
-  {
-    "mason-org/mason-lspconfig.nvim",
-    dependencies = { "neovim/nvim-lspconfig" },
-    event = "User BaseFile",
-    opts = function(_, opts)
-      if not opts.handlers then opts.handlers = {} end
-      opts.handlers[1] = function(server) utils_lsp.setup(server) end
-    end,
-    config = function(_, opts)
-      require("mason-lspconfig").setup(opts)
-      utils_lsp.apply_default_lsp_settings() -- Apply our default lsp settings.
-      utils.trigger_event("FileType")        -- This line starts this plugin.
-    end,
-  },
+  -- {
+  --   "mason-org/mason-lspconfig.nvim",
+  --   dependencies = { "neovim/nvim-lspconfig" },
+  --   event = "User BaseFile",
+  --   opts = function(_, opts)
+  --     if not opts.handlers then opts.handlers = {} end
+  --     opts.handlers[1] = function(server) utils_lsp.setup(server) end
+  --   end,
+  --   config = function(_, opts)
+  --     require("mason-lspconfig").setup(opts)
+  --     utils_lsp.apply_default_lsp_settings() -- Apply our default lsp settings.
+  --     utils.trigger_event("FileType")        -- This line starts this plugin.
+  --   end,
+  -- },
 
   --  mason [lsp package manager]
   --  https://github.com/mason-org/mason.nvim
   --  https://github.com/zeioth/mason-extra-cmds
-  {
-    "mason-org/mason.nvim",
-    dependencies = { "zeioth/mason-extra-cmds", opts = {} },
-    cmd = {
-      "Mason",
-      "MasonInstall",
-      "MasonUninstall",
-      "MasonUninstallAll",
-      "MasonLog",
-      "MasonUpdate",
-      "MasonUpdateAll", -- this cmd is provided by mason-extra-cmds
-    },
-    opts = {
-      registries = {
-        -- "github:nvim-java/mason-registry",
-        "github:mason-org/mason-registry",
-      },
-      ui = {
-        icons = {
-          package_installed = require("base.utils").get_icon("MasonInstalled"),
-          package_uninstalled = require("base.utils").get_icon("MasonUninstalled"),
-          package_pending = require("base.utils").get_icon("MasonPending"),
-        },
-      },
-    }
-  },
+  -- {
+  --   "mason-org/mason.nvim",
+  --   dependencies = { "zeioth/mason-extra-cmds", opts = {} },
+  --   cmd = {
+  --     "Mason",
+  --     "MasonInstall",
+  --     "MasonUninstall",
+  --     "MasonUninstallAll",
+  --     "MasonLog",
+  --     "MasonUpdate",
+  --     "MasonUpdateAll", -- this cmd is provided by mason-extra-cmds
+  --   },
+  --   opts = {
+  --     registries = {
+  --       -- "github:nvim-java/mason-registry",
+  --       "github:mason-org/mason-registry",
+  --     },
+  --     ui = {
+  --       icons = {
+  --         package_installed = require("base.utils").get_icon("MasonInstalled"),
+  --         package_uninstalled = require("base.utils").get_icon("MasonUninstalled"),
+  --         package_pending = require("base.utils").get_icon("MasonPending"),
+  --       },
+  --     },
+  --   }
+  -- },
 
   --  Schema Store [mason extra schemas]
   --  https://github.com/b0o/SchemaStore.nvim
@@ -312,22 +312,22 @@ return {
 
   -- none-ls [lsp code formatting]
   -- https://github.com/nvimtools/none-ls.nvim
-  {
-    "nvimtools/none-ls.nvim",
-    event = "User BaseFile",
-    opts = function()
-      local builtin_sources = require("null-ls").builtins
-
-      -- You can customize your 'builtin sources' and 'external sources' here.
-      builtin_sources.formatting.shfmt.with({
-        command = "shfmt",
-        args = { "-i", "2", "-filename", "$FILENAME" },
-      })
-
-      -- Attach the user lsp mappings to every none-ls client.
-      return { on_attach = utils_lsp.apply_user_lsp_mappings }
-    end
-  },
+  -- {
+  --   "nvimtools/none-ls.nvim",
+  --   event = "User BaseFile",
+  --   opts = function()
+  --     local builtin_sources = require("null-ls").builtins
+  --
+  --     -- You can customize your 'builtin sources' and 'external sources' here.
+  --     builtin_sources.formatting.shfmt.with({
+  --       command = "shfmt",
+  --       args = { "-i", "2", "-filename", "$FILENAME" },
+  --     })
+  --
+  --     -- Attach the user lsp mappings to every none-ls client.
+  --     return { on_attach = utils_lsp.apply_user_lsp_mappings }
+  --   end
+  -- },
 
   --  garbage-day.nvim [lsp garbage collector]
   --  https://github.com/zeioth/garbage-day.nvim
