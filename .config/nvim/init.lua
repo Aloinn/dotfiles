@@ -44,6 +44,9 @@ load_sources({
   "base.2-lazy",
   "base.3-autocmds", -- critical stuff, don't change the execution order.
 })
+-- load_sources({
+  -- "plugins.notify",
+  -- "plugins.telescope",
+-- })
 load_colorscheme("everforest")
 load_sources_async({ "base.4-mappings" })
-require("configs.lsp")

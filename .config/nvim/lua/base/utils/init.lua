@@ -210,11 +210,9 @@ end
 ---                        the function to set the mapping to.
 --- @param base? table A base set of options to set on every keybinding.
 function M.set_mappings(map_table, base)
-  -- iterate over the first keys for each mode
-  for mode, maps in pairs(map_table) do
-    -- iterate over each keybinding set in the current mode
-    for keymap, options in pairs(maps) do
-      -- build the options for the command accordingly
+  
+  function apply_mappings(mode, keymap, options)
+  -- build the options for the command accordingly
       if options then
         local cmd
         local keymap_opts = base or {}
@@ -234,12 +232,22 @@ function M.set_mappings(map_table, base)
           vim.keymap.set(mode, keymap, cmd, keymap_opts)
         end
       end
+    end 
+
+  -- iterate over the first keys for each mode
+  
+  for mode, maps in pairs(map_table) do
+    -- iterate over each keybinding set in the current mode
+    for keymap, options in pairs(maps) do
+      if string.sub(keymap, 1, 3) == "<D-" then
+        apply_mappings(mode, keymap:gsub("^<D%-", "<M-"), options)
+      end
+      apply_mappings(mode, keymap, options)
     end
   end
   -- if which-key is loaded already, register
   if package.loaded["which-key"] then M.which_key_register() end
 end
-
 
 --- Add syntax matching rules for highlighting URLs/URIs.
 function M.set_url_effect()

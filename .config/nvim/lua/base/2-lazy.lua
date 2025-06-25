@@ -84,7 +84,9 @@ local function setup_lazy(lazy_dir)
 
   vim.opt.rtp:prepend(lazy_dir)
   require("lazy").setup({
-    spec = spec,
+    spec = {
+      spec
+    },
     defaults = { lazy = true },
     performance = {
       rtp = { -- Disable unnecessary nvim features to speed up startup.
