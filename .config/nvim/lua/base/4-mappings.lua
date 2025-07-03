@@ -27,7 +27,6 @@
 --       -> aerial.nvim
 --       -> litee-calltree.nvim
 --       -> telescope.nvim                     [find]
---       -> toggleterm.nvim
 --       -> dap.nvim                           [debugger]
 --       -> tests                              [tests]
 --       -> nvim-ufo
@@ -86,11 +85,8 @@ t = { desc = get_icon("Terminal", true) .. " Terminal" },
 }
 
 
-vim.g.maplocalleader = ""
-vim.keymap.set("n", "<localleader>f", function() print("You pressed localleader + f") end)
 
 -- standard Operations -----------------------------------------------------
-maps.n["D"] = {"dd", desc = "Delete line"}
 maps.n["<leader>n"] = { "<cmd>enew<cr>", desc = "New file" }
 maps.n["<D-/>"] = { "gcc", remap = true, desc = "Toggle comment line" }
 maps.x["<D-/>"] = { "gc", remap = true, desc = "Toggle comment" }
@@ -313,31 +309,6 @@ maps.n["<leader>ba"] = {
   function() vim.cmd("wa") end,
   desc = "Write all changed buffers",
 }
-maps.n["]b"] = {
-  function()
-    require("heirline-components.buffer").nav(vim.v.count > 0 and vim.v.count or 1)
-  end,
-  desc = "Next buffer",
-}
-maps.n["[b"] = {
-  function()
-    require("heirline-components.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1))
-  end,
-  desc = "Previous buffer",
-}
-maps.n[">b"] = {
-  function()
-    require("heirline-components.buffer").move(vim.v.count > 0 and vim.v.count or 1)
-  end,
-  desc = "Move buffer tab right",
-}
-maps.n["<b"] = {
-  function()
-    require("heirline-components.buffer").move(-(vim.v.count > 0 and vim.v.count or 1))
-  end,
-  desc = "Move buffer tab left",
-}
-
 maps.n["<leader>b"] = icons.b
 maps.n["<leader>bc"] = {
   function() require("heirline-components.buffer").close_all(true) end,
@@ -813,6 +784,18 @@ if is_available("litee-calltree.nvim") then
 end
 
 -- telescope.nvim [find] ----------------------------------------------------
+maps.n["<leader>bbb"] = {
+  function () 
+    require("browser_bookmarks").select() 
+  end,
+  desc = "Browser find"
+}
+maps.n["<D-s>"] = {
+  "<cmd>:w<cr>"
+}
+maps.i["<D-s>"] = {
+  "<cmd>:w<cr>"
+}
 if is_available("telescope.nvim") then
   maps.n["<leader>f"] = icons.f
   maps.n["<leader>gb"] = {
@@ -867,38 +850,6 @@ if is_available("telescope.nvim") then
   maps.n["<leader>fw"] = {
     function() require("telescope.builtin").grep_string() end,
     desc = "Find word under cursor in project",
-  }
-
-local my_find_files
-my_find_files = function(opts, no_ignore)
-  opts = opts or {}
-  no_ignore = vim.F.if_nil(no_ignore, false)
-  opts.attach_mappings = function(_, map)
-    telescope_switch = function(prompt_bufnr) -- <C-h> to toggle modes
-      local prompt = require("telescope.actions.state").get_current_line()
-      require("telescope.actions").close(prompt_bufnr)
-      no_ignore = not no_ignore
-      my_find_files({ default_text = prompt }, no_ignore)
-    end
-    map({ "n", "i" }, "<D-p>", telescope_switch)
-    map({ "n", "i" }, "<M-p>", telescope_switch)
-    return true
-  end
-
-  if no_ignore then
-    opts.no_ignore = true
-    opts.hidden = true
-    opts.prompt_title = "Find Files <ALL>"
-    require("telescope.builtin").find_files(opts)
-  else
-    opts.prompt_title = "Find Files"
-    require("telescope.builtin").find_files(opts)
-  end
-end
-
-  maps.n["<D-p>"] = {
-    my_find_files,
-    desc = "Find files"
   }
   -- maps.n["<D-p>"] = {
   --    function() require("telescope.builtin").find_files() end,
@@ -1392,6 +1343,8 @@ if is_available("hop.nvim") then
     desc = "Hop to word",
   }
 end
+
+---- TELESCOPE
 
 utils.set_mappings(maps)
 return M

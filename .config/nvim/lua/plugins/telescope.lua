@@ -73,6 +73,12 @@ local utils = require("base.utils")
           mappings = mappings,
         },
         extensions = {
+          hop ={
+            line_hp = "CursorLine"
+          },
+          file_browser = {
+            hidden = { file_browser = true, folder_browser = true }
+          },
           undo = {
             use_delta = true,
             side_by_side = true,
