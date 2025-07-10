@@ -6,3 +6,5 @@
 - [VersionSet - LN](https://code.amazon.com/version-sets/DdbLogNode)
 - [VersionSet - AA](https://code.amazon.com/version-sets/BigBirdAutoAdmin)
 - [VersionSet - SN](https://code.amazon.com/version-sets/BigBirdStorageNode)
+- [VersionSet - SN Development](https://pipelines.amazon.com/pipelines/BigBirdStorageNode-development-staging)
+- [VersionSet - SN RC](https://pipelines.amazon.com/pipelines/BigBirdStorageNode-rc)

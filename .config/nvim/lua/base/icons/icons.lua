@@ -122,6 +122,7 @@ return {
   GreeterSessions = "🔎",
   GreeterProjects = "💼",
   GreeterBookmarks = "📚",
+  GreeterYabai = "📺",
   GreeterTerminal = "🖥️",
   GreeterPlug = "",
 

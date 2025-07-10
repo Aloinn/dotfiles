@@ -387,7 +387,9 @@ return {
         notify = true,
         reload_files = {
           config_dir .. "1-options.lua",
-          config_dir .. "4-mappings.lua"
+          config_dir .. "4-mappings.lua",
+          config_dir .. "keymaps.lua",
+          config_dir .. "yabaipicker.lua",
         },
         reload_callback = function()
           vim.cmd(":silent! colorscheme " .. vim.g.default_colorscheme) -- nvim     colorscheme reload command

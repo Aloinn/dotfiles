@@ -51,6 +51,9 @@ return
         dashboard.button("t", 
           get_icon("GreeterTerminal") .. " Terminal", "<cmd>exit<CR>"),
         -- dashboard.button("", ""),
+        dashboard.button("y",
+          get_icon("GreeterYabai") .. " Yabai",
+          "<cmd>YabaiWindows<CR>"),  
         dashboard.button("q", "   ", "<cmd>exit<CR>"),
       }
 

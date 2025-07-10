@@ -71,6 +71,12 @@ local utils = require("base.utils")
             preview_cutoff = 0,
           },
           mappings = mappings,
+          border = true,
+          borderchars = {
+            prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+            results = { "─", " ", " ", " ", "─", "─", " ", " " },
+            preview = { "─", " ", " ", "│", "┬", " ", " ", " " }
+          }
         },
         extensions = {
           hop ={
