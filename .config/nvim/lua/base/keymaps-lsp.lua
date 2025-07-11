@@ -1,4 +1,9 @@
-
+local utils = require("base.utils")
+local get_icon = utils.get_icon
+local is_available = utils.is_available
+local ui = require("base.utils.ui")
+local maps = require("base.utils").get_mappings_template()
+local M = {}
 -- mason-lspconfig.nvim [lsp] -------------------------------------------------
 -- WARNING: Don't delete this section, or you won't have LSP keymappings.
 
@@ -313,3 +318,6 @@ if is_autoformat_enabled and is_filetype_allowed and is_filetype_ignored then
 
   return lsp_mappings
 end
+utils.set_mappings(maps)
+
+return M

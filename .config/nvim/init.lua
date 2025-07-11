@@ -49,6 +49,8 @@ load_sources({
   -- "plugins.telescope",
 -- })
 load_colorscheme("everforest")
+load_sources_async({ "base.keymaps-lsp" })
 load_sources_async({ "base.keymaps" })
 load_sources_async({ "base.yabaipicker" })
 load_sources_async({ "base.4-mappings" })
+require("configs.lsp")

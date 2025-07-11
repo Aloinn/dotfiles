@@ -3,6 +3,9 @@ return
   --  https://github.com/petertriho/nvim-scrollbar
   {
     "petertriho/nvim-scrollbar",
+    dependencies = {
+      {"lewis6991/gitsigns.nvim"}
+    },
     event = "User BaseFile",
     opts = {
       handlers = {
