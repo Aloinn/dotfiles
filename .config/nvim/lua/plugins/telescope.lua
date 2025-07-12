@@ -64,7 +64,8 @@ local utils = require("base.utils")
               preview_width = 0.50,
             },
             vertical = {
-              mirror = false,
+              prompt_position = "top",
+              mirror = true,
             },
             width = 0.87,
             height = 0.80,

@@ -11,10 +11,15 @@ function M.get_bemol_ws_folders()
         if file then
             for line in file:lines() do
                 table.insert(ws_folders_lsp, line)
+                require("base.utils").notify(
+                  "Error setting up colorscheme: " .. line,
+                  vim.log.levels.ERROR
+                )
             end
             file:close()
         end
     end
+     
     return ws_folders_lsp
 end
 
@@ -61,5 +66,25 @@ function M.remove_package_build_link_if_exists(client)
     end
 end
 
-return M
+-- bemol
+local function bemol()
+    local bemol_dir = vim.fs.find({ ".bemol" }, { upward = true, type = "directory" })[1]
+    local ws_folders_lsp = {}
+    if bemol_dir then
+        local file = io.open(bemol_dir .. "/ws_root_folders", "r")
+        if file then
+            for line in file:lines() do
+                table.insert(ws_folders_lsp, line)
+            end
+            file:close()
+        end
 
+        for _, line in ipairs(ws_folders_lsp) do
+            if not contains(vim.lsp.buf.list_workspace_folders(), line) then
+                vim.lsp.buf.add_workspace_folder(line)
+            end
+        end
+    end
+end
+
+return M

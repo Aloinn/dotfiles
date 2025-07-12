@@ -57,10 +57,47 @@ maps.x["<D-c>"] = {
   "y"
 }
 
--- SEARCH
-maps.n["<D-.>"] = { function()
+-- LSP
+lsp_cycle = function(opts, state)
+  opts = opts or {}
+  state = vim.F.if_nil(state, 0)
+  opts.attach_mappings = function(_, map)
+    telescope_switch = function(prompt_bufnr) -- <C-h> to toggle modes
+      local prompt = require("telescope.actions.state").get_current_line()
+      require("telescope.actions").close(prompt_bufnr)
+      lsp_cycle({ default_text = prompt }, (1 + state) % 3)
+    end
+    map({ "n", "i" }, "<D-.>", telescope_switch)
+    map({ "n", "i" }, "<M-.>", telescope_switch)
+    return true
+  end
+
+  if state == 0 then
+    require("telescope.builtin").lsp_definitions()
+  elseif state == 1 then
+    require("telescope.builtin").lsp_references()
+  elseif state == 2 then
+    opts.prompt_title = "Manage files"
+    require("telescope").extensions.file_browser.file_browser()
+  end
+end
+maps.n["<D-.>"] = { lsp_cycle, desc = "Go to defintion"}
+maps.n["<D-,>"] = { function()
+        map("grj", vim.lsp.buf.rename, "[R]e[n]ame")
+        map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
+        map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+        map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+        map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+        map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+        map("grO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
+        map("grW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
+        map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+
+ 
   require("telescope.builtin").grep_string({ search = vim.fn.expand("<cword>") })
 end, desc = "Search word under cursor" }
+
+-- maps.n["<D-.>"] = { require("telescope.builtin").lsp_references, desc = "Go to defintion"}
 
 utils.set_mappings(maps)
 return M
