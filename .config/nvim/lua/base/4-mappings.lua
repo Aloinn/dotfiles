@@ -87,6 +87,8 @@ t = { desc = get_icon("Terminal", true) .. " Terminal" },
 
 
 -- standard Operations -----------------------------------------------------
+-- maps.n["D"] = {'"_dd', desc = "Delete line",   noremap = true }
+maps.n["q"] = {"<cmd>:close<cr>"}
 maps.n["<leader>n"] = { "<cmd>enew<cr>", desc = "New file" }
 maps.n["<D-/>"] = { "gcc", remap = true, desc = "Toggle comment line" }
 maps.x["<D-/>"] = { "gc", remap = true, desc = "Toggle comment" }
@@ -289,6 +291,10 @@ maps.n["<M-x>"] = { -- Close window and buffer at the same time.
 maps.n["<D-x>"] = { -- Close window and buffer at the same time.
   function() require("heirline-components.buffer").wipe() end,
   desc = "Wipe buffer",
+}
+maps.n["<D-BS>"] = { -- Close buffer keeping the window.
+  function() require("heirline-components.buffer").close() end,
+  desc = "Close buffer",
 }
 maps.n["<leader>C"] = { -- Close buffer keeping the window.
   function() require("heirline-components.buffer").close() end,

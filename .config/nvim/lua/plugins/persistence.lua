@@ -1,22 +1,30 @@
 return {
-  'rmagatti/auto-session',
-  lazy = false,
-
-  ---enables autocomplete for opts
-  ---@module "auto-session"
-  ---@type AutoSession.Config
+  "olimorris/persisted.nvim",
+  event = "BufReadPre", -- Ensure the plugin loads only when a buffer has been loaded
   opts = {
-    suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
-    ession_lens = {
-      mappings = {
-        -- Mode can be a string or a table, e.g. {"i", "n"} for both insert and normal mode
-        delete_session = { "i", "<D-D>" }
-        -- alternate_session = { "i", "<>" },
-        -- copy_session = { "i", "<C-Y>" },
-      },
-    }
-  }
+    -- Your config goes here ...
+  },
 }
+
+-- return {
+--   'rmagatti/auto-session',
+--   lazy = false,
+--
+--   ---enables autocomplete for opts
+--   ---@module "auto-session"
+--   ---@type AutoSession.Config
+--   opts = {
+--     suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+--     ession_lens = {
+--       mappings = {
+--         -- Mode can be a string or a table, e.g. {"i", "n"} for both insert and normal mode
+--         delete_session = { "i", "<D-D>" }
+--         -- alternate_session = { "i", "<>" },
+--         -- copy_session = { "i", "<C-Y>" },
+--       },
+--     }
+--   }
+-- }
 -- return {
 --     "gennaro-tedesco/nvim-possession",
 --     dependencies = {

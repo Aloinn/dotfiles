@@ -136,10 +136,97 @@ local config = {
     on_attach = bemol,
 }
 
-  vim.api.nvim_create_autocmd("FileType", {
+
+vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
   callback = function()
     jdtls.start_or_attach(config)
+    set_java_buffers()
   end,
 })
 
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile" ,"BufEnter"}, {
+  pattern = "java",
+  callback = function(args)
+    local name = vim.api.nvim_buf_get_name(args.buf)
+    if name:match("^jdt://") then
+      vim.schedule(function()
+        vim.bo[args.buf].filetype = "java"
+      end)
+    end
+  end,
+})
+
+local builtin = require("telescope.builtin")
+local pickers = require("telescope.pickers")
+local finders = require("telescope.finders")
+local conf = require("telescope.config").values
+local make_entry = require("telescope.make_entry")
+local entry_display = require("telescope.pickers.entry_display")
+
+local pcolors = {
+  "TelescopeResultsClass",
+  "TelescopeResultsConstant",
+  "TelescopeResultsOperator",
+  "TelescopeResultsVariable",
+  "TelescopeResultsClass",
+  "TelescopeResultsComment"
+}
+
+function set_java_buffers()
+  local entry_maker = function(bufnr)
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    local displayname = name:match("^.+/(.+)$") or name
+    local repo = name:match("src/([^/]+)")
+    local decompiled = false
+    if name:match("^jdt://") then
+      -- name = "[JDT] " .. (name:match("[^/]+$") or "Decompiled")
+      repo, class = name:match("([^%%]+)%%(.*)")
+      displayname = name:match(".*%((.*)$")
+      repo = repo:match("([^%-]+)"):gsub("^jdt://contents/", "")
+      repo = repo:gsub("/.*", "")
+      decompiled = true
+    end
+
+    local displayer = entry_display.create {
+      separator = " ",
+      items = {
+        {},
+        {},
+        {},
+      }
+    }
+    -- local file_name  tostring(entry.value),
+    return {
+      value = bufnr,
+      ordinal = name,
+      display = function(entry)
+        return displayer {
+          {'['..repo..']', pcolors[2]},
+          {displayname, pcolors[decompiled and 6 or 0]},
+        }
+      end,
+      path = name,
+      bufnr = bufnr
+    }
+  end
+
+  builtin.buffers = function(opts)
+    opts = opts or {}
+
+    local bufnrs = vim.tbl_filter(function(b)
+      return vim.api.nvim_buf_is_loaded(b)
+    end, vim.api.nvim_list_bufs())
+
+    pickers.new(opts, {
+      prompt_title = "Buffers",
+      
+      finder = finders.new_table({
+        results = bufnrs,
+        entry_maker = entry_maker 
+      }),
+      -- previewer = conf.buffer_previewer(opts),
+      sorter = conf.generic_sorter(opts),
+    }):find()
+  end
+end

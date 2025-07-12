@@ -81,23 +81,33 @@ lsp_cycle = function(opts, state)
     require("telescope").extensions.file_browser.file_browser()
   end
 end
-maps.n["<D-.>"] = { lsp_cycle, desc = "Go to defintion"}
-maps.n["<D-,>"] = { function()
-        map("grj", vim.lsp.buf.rename, "[R]e[n]ame")
-        map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-        map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-        map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-        map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-        map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-        map("grO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
-        map("grW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
-        map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+-- maps.n["<D-.>"] = { lsp_cycle, desc = "Go to defintion"}
 
- 
-  require("telescope.builtin").grep_string({ search = vim.fn.expand("<cword>") })
-end, desc = "Search word under cursor" }
+maps.n["<D-.>d"] = { require("telescope.builtin").lsp_type_definitions, desc = "Go to Definition" }
+maps.n["<D-.>i"] = { require("telescope.builtin").lsp_implementations,  desc = "Go to Implementation" }
+maps.n["<D-.>."] = { require("telescope.builtin").lsp_type_definitions, desc = "Go to Type Definition" }
+-- maps.n["<D-.>D"] = { vim.lsp.buf.declaration, desc = "Go to Declaration" }
+maps.n["<D-.>r"] = { require("telescope.builtin").lsp_references, desc = "Find References" }
+maps.n["<D-.>y"] = { require("telescope.builtin").lsp_references, desc = "Rename Symbol" }
 
--- maps.n["<D-.>"] = { require("telescope.builtin").lsp_references, desc = "Go to defintion"}
+--
+-- maps.n["<D-.>"] = { function()
+-- maps.n["<D-.>"] = { 
+--         map("grj", vim.lsp.buf.rename, "[R]e[n]ame")
+--         map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
+--         map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+--         map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+--         map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+--         map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+--         map("grO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
+--         map("grW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
+--         map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+--
+--
+--   require("telescope.builtin").grep_string({ search = vim.fn.expand("<cword>") })
+-- end, desc = "Search word under cursor" }
+--
+-- -- maps.n["<D-.>"] = { require("telescope.builtin").lsp_references, desc = "Go to defintion"}
 
 utils.set_mappings(maps)
 return M
