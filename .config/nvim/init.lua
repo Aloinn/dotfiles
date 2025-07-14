@@ -58,3 +58,11 @@ load_sources_async({ "base.4-mappings" })
 -- vim.cmd("filetype plugin on")
 
 require("configs.java")--
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "ProjectRootChanged",
+  callback = function()
+    require("persisted").load()
+  end,
+})
+

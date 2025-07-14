@@ -1,7 +1,30 @@
+-- Lua
+-- return {
+--   "folke/persistence.nvim",
+--   event = "BufReadPre", -- this will only start session saving when an actual file was opened
+--   opts = {
+--     -- add any custom options here
+--   }
+-- }
 return {
   "olimorris/persisted.nvim",
   event = "BufReadPre", -- Ensure the plugin loads only when a buffer has been loaded
   opts = {
+    autoload = true,
+    -- autosave = true,
+    use_git_branch = true,
+    telescope = {
+    mappings = { -- Mappings for managing sessions in Telescope
+      copy_session = "<C-c>",
+      change_branch = "<C-b>",
+      delete_session = "<C-d>",
+    },
+    icons = { -- icons displayed in the Telescope picker
+      selected = " ",
+      dir = "  ",
+      branch = " ",
+    },
+  },
     -- Your config goes here ...
   },
 }

@@ -28,7 +28,8 @@ my_find_files = function(opts, state)
     require("telescope.builtin").find_files(opts)
   elseif state == 2 then
     opts.prompt_title = "Manage files"
-    require("telescope").extensions.file_browser.file_browser()
+    require("telescope").load_extension("persisted")
+    -- require("telescope").extensions.file_browser.file_browser()
   end
 end
 
@@ -57,6 +58,52 @@ maps.x["<D-c>"] = {
   "y"
 }
 
+-- GIT
+maps.n["<D-g>"] = {"<cmd>LazyGit<cr>"}
+
+-- SESSION
+maps.n["<D-S>"] = {"<cmd>Telescope persisted<cr>"}
+-- maps.n["<leader>S"] = icons.S
+maps.n["<leader>Sl"] = {
+  "<cmd>SessionManager! load_last_session<cr>",
+  desc = "Load last session",
+}
+maps.n["<leader>Ss"] = {
+  "<cmd>SessionManager! save_current_session<cr>",
+  desc = "Save this session",
+}
+maps.n["<leader>Sd"] =
+{ "<cmd>SessionManager! delete_session<cr>", desc = "Delete session" }
+maps.n["<leader>Sf"] =
+{ "<cmd>SessionManager! load_session<cr>", desc = "Search sessions" }
+maps.n["<leader>S."] = {
+  "<cmd>SessionManager! load_current_dir_session<cr>",
+  desc = "Load current directory session",
+}
+-- if is_available("resession.nvim") then
+--   maps.n["<leader>S"] = icons.S
+--   maps.n["<leader>Sl"] = {
+--     function() require("resession").load "Last Session" end,
+--     desc = "Load last session",
+--   }
+--   maps.n["<leader>Ss"] =
+--   { function() require("resession").save() end, desc = "Save this session" }
+--   maps.n["<leader>St"] = {
+--     function() require("resession").save_tab() end,
+--     desc = "Save this tab's session",
+--   }
+--   maps.n["<leader>Sd"] =
+--   { function() require("resession").delete() end, desc = "Delete a session" }
+--   maps.n["<leader>Sf"] =
+--   { function() require("resession").load() end, desc = "Load a session" }
+--   maps.n["<leader>S."] = {
+--     function()
+--       require("resession").load(vim.fn.getcwd(), { dir = "dirsession" })
+--     end,
+--     desc = "Load current directory session",
+--   }
+-- end
+
 -- LSP
 lsp_cycle = function(opts, state)
   opts = opts or {}
@@ -78,7 +125,7 @@ lsp_cycle = function(opts, state)
     require("telescope.builtin").lsp_references()
   elseif state == 2 then
     opts.prompt_title = "Manage files"
-    require("telescope").extensions.file_browser.file_browser()
+    -- require("telescope").extensions.file_browser.file_browser()
   end
 end
 -- maps.n["<D-.>"] = { lsp_cycle, desc = "Go to defintion"}

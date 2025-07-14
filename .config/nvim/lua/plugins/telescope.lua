@@ -36,8 +36,8 @@ local utils = require("base.utils")
           ["<C-c>"] = false,
           ["<D-/>"] = require("telescope").extensions.hop.hop,  -- hop.hop_toggle_selection
           ["<M-/>"] = require("telescope").extensions.hop.hop,  -- hop.hop_toggle_selection
-          ['<D-x>'] = require('telescope.actions').delete_buffer,
-          ['<M-x>'] = require('telescope.actions').delete_buffer
+          ['<D-d>'] = require('telescope.actions').delete_buffer,
+          ['<M-d>'] = require('telescope.actions').delete_buffer
         },
         n = {
           ["q"] = actions.close,

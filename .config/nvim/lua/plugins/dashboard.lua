@@ -40,7 +40,7 @@ return
         -- yazi_button,
         dashboard.button("s",
           get_icon("GreeterSessions") .. " Sessions",
-          "<cmd>SessionManager! load_session<CR>"
+          "<cmd>Telescope persisted<CR>"
         ),
         dashboard.button("p",
           get_icon("GreeterProjects") .. " Projects",

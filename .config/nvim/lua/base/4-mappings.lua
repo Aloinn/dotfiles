@@ -608,36 +608,7 @@ if is_available("vim-fugitive") then
   }
 end
 -- git client
-if vim.fn.executable "lazygit" == 1 then -- if lazygit exists, show it
-  toggle_git = {
-    function()
-      local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
-      if git_dir ~= "" then
-        vim.cmd("TermExec cmd='lazygit && exit'")
-      else
-        utils.notify("Not a git repository", vim.log.levels.WARN)
-      end
-    end,
-  }
-  maps.n["<D-g>"] = toggle_git
-end
-if vim.fn.executable "gitui" == 1 then -- if gitui exists, show it
-  maps.n["<leader>gg"] = {
-    function()
-      local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
-      if git_dir ~= "" then
-        if vim.fn.executable "keychain" == 1 then
-          vim.cmd('TermExec cmd="eval `keychain --eval ~/.ssh/github.key` && gitui && exit"')
-        else
-          vim.cmd("TermExec cmd='gitui && exit'")
-        end
-      else
-        utils.notify("Not a git repository", vim.log.levels.WARN)
-      end
-    end,
-    desc = "ToggleTerm gitui",
-  }
-end
+
 
 -- file browsers ------------------------------------
 -- yazi
@@ -657,48 +628,6 @@ if is_available("neo-tree.nvim") then
 end
 
 -- session manager ---------------------------------------------------------
-if is_available("neovim-session-manager") then
-  maps.n["<leader>S"] = icons.S
-  maps.n["<leader>Sl"] = {
-    "<cmd>SessionManager! load_last_session<cr>",
-    desc = "Load last session",
-  }
-  maps.n["<leader>Ss"] = {
-    "<cmd>SessionManager! save_current_session<cr>",
-    desc = "Save this session",
-  }
-  maps.n["<leader>Sd"] =
-  { "<cmd>SessionManager! delete_session<cr>", desc = "Delete session" }
-  maps.n["<leader>Sf"] =
-  { "<cmd>SessionManager! load_session<cr>", desc = "Search sessions" }
-  maps.n["<leader>S."] = {
-    "<cmd>SessionManager! load_current_dir_session<cr>",
-    desc = "Load current directory session",
-  }
-end
-if is_available("resession.nvim") then
-  maps.n["<leader>S"] = icons.S
-  maps.n["<leader>Sl"] = {
-    function() require("resession").load "Last Session" end,
-    desc = "Load last session",
-  }
-  maps.n["<leader>Ss"] =
-  { function() require("resession").save() end, desc = "Save this session" }
-  maps.n["<leader>St"] = {
-    function() require("resession").save_tab() end,
-    desc = "Save this tab's session",
-  }
-  maps.n["<leader>Sd"] =
-  { function() require("resession").delete() end, desc = "Delete a session" }
-  maps.n["<leader>Sf"] =
-  { function() require("resession").load() end, desc = "Load a session" }
-  maps.n["<leader>S."] = {
-    function()
-      require("resession").load(vim.fn.getcwd(), { dir = "dirsession" })
-    end,
-    desc = "Load current directory session",
-  }
-end
 
 -- smart-splits.nvim
 if is_available("smart-splits.nvim") then
