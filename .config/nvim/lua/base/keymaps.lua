@@ -55,7 +55,7 @@ maps.x["d"] = {'"_d', desc = "Delete selection", noremap = true}
 maps.n["<D-c>"] = { '"+y<esc>', desc = "Copy to cliboard" }
 maps.x["<A-c>"] = { '"+y<esc>', desc = "Copy to cliboard" }
 maps.n["<D-x>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
-maps.x["<D-x>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
+maps.x["<D-x>"] = { 'd', desc = "Copy to clipboard and delete line" }
 maps.n["<D-v>"] = { '"+p<esc>', desc = "Paste from clipboard" }
 maps.x["<D-c>"] = {
   "y"

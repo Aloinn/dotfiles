@@ -8,7 +8,19 @@ vim.g.default_colorscheme = "tokyonight-night"
 
 -- Options --------------------------------------------------------------------
 vim.opt.breakindent = true -- Wrap indent to match  line start.
-vim.opt.clipboard = "unnamedplus" -- Connection to the system clipboard.
+vim.opt.clipboard = "unnamed,unnamedplus" -- Connection to the system clipboard.
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+    ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste '+',
+    ['*'] = require('vim.ui.clipboard.osc52').paste '*',
+  },
+}
+ 
 vim.opt.cmdheight = 0 -- Hide command line unless needed.
 vim.opt.completeopt = { "menu", "menuone", "noselect" } -- Options for insert mode completion.
 vim.opt.copyindent = true -- Copy the previous indentation on autoindenting.
