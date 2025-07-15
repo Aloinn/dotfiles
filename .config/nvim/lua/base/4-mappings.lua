@@ -775,12 +775,12 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find nvim config files",
   }
-  toggle_buffers = {
-    function() require("telescope.builtin").buffers() end,
+  toggle_buffers_tree = {
+    "<cmd>Neotree toggle show buffers right<cr>",
     desc = "Find buffers",
   }
-  maps.n["<D-b>"] = toggle_buffers
-  maps.n["<leader>fB"] = toggle_buffers
+
+  maps.n["<D-B>"] = toggle_buffers_tree 
 
   maps.n["<leader>fw"] = {
     function() require("telescope.builtin").grep_string() end,
@@ -1264,9 +1264,15 @@ if is_available("hop.nvim") then
   -- from special menus like 'quickfix', 'q?' and 'q:' with <C+ENTER>.
 
   maps.n["<C-m>"] = { -- The terminal undersand C-m and ENTER as the same key.
+    vim.bo.filetype == 'qf' and '<CR>' or
     function()
-      require("hop")
-      vim.cmd("silent! HopWord")
+      if vim.bo.filetype ~= 'qf' then
+        require('hop').hint_words()
+      else
+        return "<C-m>"
+      end
+      -- require("hop")
+      -- vim.cmd("silent! HopWord")
     end,
     desc = "Hop to word",
   }

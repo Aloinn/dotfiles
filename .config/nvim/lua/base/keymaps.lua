@@ -42,7 +42,10 @@ maps.n["<D-p>"] = {
 maps.n["<D-s>"] = {
   "<cmd>:w"
 }
-
+maps.n["<D-\\>"] = {
+  "<cmd>Telescope resume<cr>",
+  desc = "test"
+}
 
 -- DELETE
 maps.n["D"] = {'"_dd', desc = "Delete line",   noremap = true }
@@ -136,6 +139,15 @@ maps.n["<D-.>."] = { require("telescope.builtin").lsp_type_definitions, desc = "
 -- maps.n["<D-.>D"] = { vim.lsp.buf.declaration, desc = "Go to Declaration" }
 maps.n["<D-.>r"] = { require("telescope.builtin").lsp_references, desc = "Find References" }
 maps.n["<D-.>y"] = { require("telescope.builtin").lsp_references, desc = "Rename Symbol" }
+
+
+-- BUFFERS
+toggle_buffers = {
+  function() require("telescope.builtin").buffers({sort_lastused = true}) end,
+  desc = "Find buffers",
+}
+maps.n["<D-b>"] = toggle_buffers
+
 
 --
 -- maps.n["<D-.>"] = { function()

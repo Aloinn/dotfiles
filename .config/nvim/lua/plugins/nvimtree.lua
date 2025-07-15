@@ -16,7 +16,7 @@ return {
         buffers = {
           show_unloaded = true
         },
-        sources = { "filesystem", },
+        sources = { "filesystem", "buffers" },
         source_selector = {
           -- winbar = true,
           -- content_layout = "center",
