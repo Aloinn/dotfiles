@@ -69,6 +69,10 @@ local path_to_plugins = path_to_jdtls .. "/plugins/"
 -- the eclipse jar is suffixed with a bunch of version nonsense, so we find it by pattern matching
 local path_to_jar = path_to_plugins .. find_file(path_to_plugins, "org.eclipse.equinox.launcher_")
 
+local bundles = {
+  vim.fn.glob(home .. "/dotfiles/java/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar", 1)
+}
+vim.list_extend(bundles, vim.split(vim.fn.glob(home.."/dotfiles/java/vscode-java-test/server/*.jar", 1), "\n"))
 local config = {
     cmd = {
         -- assumes the java binary is in your PATH and at least java17;
@@ -134,6 +138,9 @@ local config = {
 
     -- run our bemol function when the LSP attaches to the buffer
     on_attach = bemol,
+    init_options = {
+        bundles = bundles 
+    }
 }
 
 

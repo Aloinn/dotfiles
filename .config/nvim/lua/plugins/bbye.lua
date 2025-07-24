@@ -1,3 +1,4 @@
 return {
-  "moll/vim-bbye"
+  "moll/vim-bbye",
+  lazy = false
 }

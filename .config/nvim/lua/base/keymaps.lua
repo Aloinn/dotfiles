@@ -133,14 +133,16 @@ lsp_cycle = function(opts, state)
 end
 -- maps.n["<D-.>"] = { lsp_cycle, desc = "Go to defintion"}
 
-maps.n["<D-.>d"] = { require("telescope.builtin").lsp_type_definitions, desc = "Go to Definition" }
+maps.n["<D-.>d"] = { require("telescope.builtin").lsp_definitions, desc = "Go to Declaration" }
+maps.n["<D-.>["] = { require("telescope.builtin").lsp_incoming_calls, desc = "Incoming calls" }
+maps.n["<D-.>]"] = { require("telescope.builtin").lsp_outgoing_calls, desc = "Outgoing calls" }
 maps.n["<D-.>i"] = { require("telescope.builtin").lsp_implementations,  desc = "Go to Implementation" }
 maps.n["<D-.>."] = { require("telescope.builtin").lsp_type_definitions, desc = "Go to Type Definition" }
--- maps.n["<D-.>D"] = { vim.lsp.buf.declaration, desc = "Go to Declaration" }
 maps.n["<D-.>r"] = { require("telescope.builtin").lsp_references, desc = "Find References" }
 maps.n["<D-.>y"] = { require("telescope.builtin").lsp_references, desc = "Rename Symbol" }
 
-
+maps.n["<D-.>t"] = { require("jdtls").test_nearest_method, desc = "Run test" }
+-- maps.n["<D-.>t"] = { require('jdtls.dap').setup_dap_main_class_configs(), desc = "Run test" }
 -- BUFFERS
 toggle_buffers = {
   function() require("telescope.builtin").buffers({sort_lastused = true}) end,

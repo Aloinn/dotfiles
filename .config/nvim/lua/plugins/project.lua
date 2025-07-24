@@ -20,7 +20,8 @@ return
       },
       -- Don't list the next projects
       exclude_dirs = {
-        "~/"
+        "~/",
+        -- "/Users/alainlam/"
       },
       silent_chdir = true,
       manual_mode = false,
