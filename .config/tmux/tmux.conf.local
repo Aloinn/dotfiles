@@ -473,8 +473,8 @@ tmux_conf_uninstall_plugins_on_reload=true
 unbind t
 unbind x
 unbind q
-set -g @plugin 'alexwforsythe/tmux-which-key'
-set -g @plugin '2kabhishek/tmux-tea'
+# set -g @plugin 'alexwforsythe/tmux-which-key'
+# set -g @plugin '2kabhishek/tmux-tea'
 # set -g @plugin 'schasse/tmux-jump'
 # set -g @jump-key 'Enter'
 bind x "tmux switch-client -n || (tmux kill-session && tmux attach)"
@@ -497,7 +497,7 @@ bind -n C-Right select-pane -R
 bind -n C-Up    select-pane -U
 bind -n C-Down  select-pane -D
 
-
+set -g prefix M-t
 # bind -T prefix S-Tab switch-client -n
 # set -g @tea-bind 
 
