@@ -1,68 +1,31 @@
--- HELLO, welcome to NormalNvim!
--- ---------------------------------------
--- This is the entry point of your config.
--- ---------------------------------------
+vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-local function load_source(source)
-  local status_ok, error = pcall(require, source)
-  if not status_ok then
-    vim.api.nvim_echo(
-      {{"Failed to load " .. source .. "\n\n" .. error}}, true, {err = true}
-    )
-  end
-end
+-- enables us to require files in our lsp directory
+local home_dir = os.getenv("HOME")
+package.path = home_dir .. "/.config/nvim/lsp/?.lua;" .. package.path
 
-local function load_sources(source_files)
-  vim.loader.enable()
-  for _, source in ipairs(source_files) do
-    load_source(source)
-  end
-end
+-- Install `lazy.nvim` plugin manager
+require("configs.lazy-bootstrap")
 
-local function load_sources_async(source_files)
-  for _, source in ipairs(source_files) do
-    vim.defer_fn(function()
-      load_source(source)
-    end, 50)
-  end
-end
+-- Configure and install plugins
+require("configs.lazy-plugins")
 
-local function load_colorscheme(colorscheme)
-    if vim.g.default_colorscheme then
-      if not pcall(vim.cmd.colorscheme, colorscheme) then
-        require("base.utils").notify(
-          "Error setting up colorscheme: " .. colorscheme,
-          vim.log.levels.ERROR
-        )
-      end
-    end
-end
+-- load theme
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
 
--- Call the functions defined above.
-load_sources({
-  "base.1-options",
-  "base.2-lazy",
-  "base.3-autocmds", -- critical stuff, don't change the execution order.
-})
--- load_sources({
-  -- "plugins.notify",
-  -- "plugins.telescope",
--- })
-load_colorscheme("everforest")
-load_sources_async({ "base.keymaps-lsp" })
-load_sources_async({ "base.keymaps" })
-load_sources_async({ "base.yabaipicker" })
-load_sources_async({ "base.4-mappings" })
--- require("configs.lsp")
+-- Setting options
+require("configs.options")
 
--- vim.cmd("filetype plugin on")
+-- Basic Keymaps
+vim.schedule(function()
+    require("configs.keymaps")
+end)
 
-require("configs.java")--
+-- Autocmds
+require("configs.autocmds")
 
-vim.api.nvim_create_autocmd("User", {
-  pattern = "ProjectRootChanged",
-  callback = function()
-    require("persisted").load()
-  end,
-})
-
+-- LSP
+require("configs.lsp")

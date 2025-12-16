@@ -1,4 +1,4 @@
-return 
+return
   {
   --  alpha-nvim [greeter]
   --  https://github.com/goolord/alpha-nvim
@@ -19,7 +19,7 @@ return
         }
 
 
-      local get_icon = require("utils.ui").get_icon
+      local get_icon = require("base.utils").get_icon
 
       dashboard.section.header.opts.hl = "DashboardHeader"
       vim.cmd("highlight DashboardHeader guifg=#F7778F")
@@ -75,7 +75,7 @@ return
         desc = "Add Alpha dashboard footer",
         once = true,
         callback = function()
-          local  footer_icon = require("utils.ui").get_icon("GreeterPlug")
+          local  footer_icon = require("base.utils").get_icon("GreeterPlug")
           local stats = require("lazy").stats()
           stats.real_cputime = not is_windows
           local ms = math.floor(stats.startuptime * 100 + 0.5) / 100
@@ -136,4 +136,5 @@ return
       })
     end
   },
+
 }
