@@ -213,9 +213,9 @@
   # No surrounding whitespace.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_{LEFT,RIGHT}_WHITESPACE=
 
-  ##################################[ dir: current directory ]##################################
+  ##################################[ dir: current yirectory ]##################################
   # Current directory background color.
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND=14
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND=9
   # Default current directory foreground color.
   typeset -g POWERLEVEL9K_DIR_FOREGROUND=254
   # If directory is too long, shorten some of its segments to the shortest possible unique
