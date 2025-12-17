@@ -43,9 +43,11 @@ return {
                     n = {
                         ["q"] = require("telescope.actions").close,
                         ["<esc>"] = require("telescope.actions").close,
+                        ["<M-s>"] = require("trouble.sources.telescope").open
                     },
                     i = {
                         ["<esc>"] = require("telescope.actions").close, 
+                        ["<M-s>"] = require("trouble.sources.telescope").open
                     }
                 },
             },

@@ -5,7 +5,8 @@ local map = vim.keymap.set
 -- │                  Genral                     │
 -- ╰──────────────────────────────────────────────╯
 map("n", "D", "dd")
-map("n", ";", ":", { desc = "CMD enter command mode"})
+map("n", "<backspace>", "<C-o>")
+-- map("n", ";", ":", { desc = "CMD enter command mode"})
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
 map("n", "q", "<cmd>:bdelete<cr>", { desc = "close" })
 
@@ -76,13 +77,13 @@ end, { desc = "whichkey query lookup" })
 -- │               Global Toggles                 │
 -- ╰──────────────────────────────────────────────╯
 
-map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
+-- map("n", "<M-e>e", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 
-map("n", "<leader>td", function()
-    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-end, { desc = "[T]oggle [D]iagnostics" })
+-- map("n", "<M-e>d", function()
+--     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+-- end, { desc = "[T]oggle [D]iagnostics" })
 
-map("n", "<leader>tn", function()
+map("n", "<M-e>n", function()
     -- Toggling on always turns relativenumber on
     if vim.wo.number or vim.wo.relativenumber then
         vim.wo.number = false
@@ -91,17 +92,17 @@ map("n", "<leader>tn", function()
         vim.wo.number = true
         vim.wo.relativenumber = true
     end
-end, { desc = "[T]oggle Line [N]umber" })
+end, { desc = "Line number" })
 
-map("n", "<leader>tr", function()
+map("n", "<M-e>r", function()
     -- Only toggle relativenumber if number is on
     if vim.wo.number then
         vim.wo.relativenumber = not vim.wo.relativenumber
     end
-end, { desc = "[T]oggle [R]elative number" })
+end, { desc = "Relative number" })
 
-map("n", "<leader>tc", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
-
-map("n", "<leader>th", function()
-    require("nvchad.themes").open()
-end, { desc = "[T]elescope nvchad t[H]emes" })
+-- map("n", "<M-e>c", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
+--
+-- map("n", "<M-e>h", function()
+--     require("nvchad.themes").open()
+-- end, { desc = "[T]elescope nvchad t[H]emes" })

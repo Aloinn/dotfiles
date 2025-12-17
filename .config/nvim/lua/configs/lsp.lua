@@ -8,7 +8,7 @@ local enabled_servers = {
     "lua-language-server",
     "pyright",
     "ruby-lsp",
-    -- "solargraph",
+    -- "solar.aph",
     "jdtls",
     "yaml-language-server",
     "bash-language-server",
@@ -66,15 +66,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
         end
 
-        map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
-        map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-        map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-        map("grr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-        map("gri", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-        map("grd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-        map("gO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
-        map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
-        map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
+        -- map(".n", vim.lsp.buf.rename, "Rename")
+        map("<M-.>a", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
+        -- map("<M-.>D", vim.lsp.buf.declaration, "Goto Declaration")
+        map("<M-.>r", require("telescope.builtin").lsp_references, "References")
+        map("<M-.>I", require("telescope.builtin").lsp_implementations, "Implementation")
+        map(",,", require("telescope.builtin").lsp_document_symbols, "Symbols")
+        map(">", require("telescope.builtin").lsp_definitions, "Goto Definition")
+        -- map("gO", require("telescope.builtin").lsp_document_symbols, "Open Document Symbols")
+        -- map("gW", require("telescope.builtin").lsp_dynamic_workspace_symbols, "Open Workspace Symbols")
+        -- map(".t", require("telescope.builtin").lsp_type_definitions, "Goto Type Definition")
+
+        map(".", require('goto-preview').goto_preview_definition, "Definition" )
+        map("<M-.>t", require('goto-preview').goto_preview_type_definition,"Type" )
+        map("<M-.>i", require('goto-preview').goto_preview_implementation, "Implementation" )
+        map("<M-.>d", require('goto-preview').goto_preview_declaration, "Declaration" )
+        map("q", require('goto-preview').close_all_win, "Close all preview windows" )
+        -- map("gpr", require('goto-preview').goto_preview_references, "Goto preview references" )
 
         -- client config
         local client = vim.lsp.get_client_by_id(event.data.client_id)

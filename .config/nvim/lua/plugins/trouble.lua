@@ -1,17 +1,46 @@
 return {
     "folke/trouble.nvim",
-    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    opts = {
+      modes = {
+        preview_floatz = {
+          mode = "lsp_references",
+          preview = {
+            type = "float",
+            relative = "editor",
+            border = "rounded",
+            title = "Preview",
+            title_pos = "center",
+            position = { 0, -2 },
+            size = { width = 0.3, height = 0.3 },
+            zindex = 200,
+          },
+        },
+      },
+    }, -- for default options, refer to the configuration section for custom setup.
     cmd = "Trouble",
     keys = {
         {
-            "<leader>tT",
+            "<M-e>T",
             "<cmd>Trouble diagnostics toggle<cr>",
-            desc = "[T]oggle Every [T]rouble",
+            desc = "All trouble",
         },
         {
-            "<leader>tt",
+            "<M-e>t",
             "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-            desc = "[T]oggle [T]rouble",
+            desc = "Buffer trouble",
+        },
+        {
+              "<M-e>f",
+              "<cmd>Trouble telescope_files toggle win.position=float<cr>",
+              desc = "Telescope",
+        },
+        {
+              "<M-e>q",
+              "<cmd>Trouble qflist toggle<cr>",
+              desc = "Quickfix",
         },
     },
+    config = function(_, opts)
+        require('trouble').setup(opts)
+      end,
 }

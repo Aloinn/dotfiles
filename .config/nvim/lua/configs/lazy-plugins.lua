@@ -12,6 +12,7 @@ vim.keymap.set = function(mode, lhs, rhs, opts)
 end
 
 require("lazy").setup({
+    require("plugins.lsppreview"),
     require("plugins.projects"),
     require("plugins.dashboard"),
     require("plugins.sessions"),

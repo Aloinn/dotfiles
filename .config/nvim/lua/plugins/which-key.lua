@@ -14,11 +14,10 @@ return {
 
             -- Document existing key chains
             spec = {
-                { "gr", group = "[Goto] LSP" },
-                { "<leader>f", group = "[F]ind" },
-                { "<leader>t", group = "[T]oggle" },
-                { "<leader>w", group = "[W]hich Key" },
-                { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+                { "<M-.>", group = "LSP" },
+                { "<M-e>", group = "Toggle" },
+                { "<M-g>", group = "Git Hunks", mode = { "n", "v" } },
+                { "?", group = "Which keys" }
             },
         }
     end,

@@ -138,7 +138,7 @@ maps.n["<D-.>["] = { require("telescope.builtin").lsp_incoming_calls, desc = "In
 maps.n["<D-.>]"] = { require("telescope.builtin").lsp_outgoing_calls, desc = "Outgoing calls" }
 maps.n["<D-.>i"] = { require("telescope.builtin").lsp_implementations,  desc = "Go to Implementation" }
 maps.n["<D-.>."] = { require("telescope.builtin").lsp_type_definitions, desc = "Go to Type Definition" }
-maps.n["<D-.>r"] = { require("telescope.builtin").lsp_references, desc = "Find References" }
+maps.n["<D-.>r"] = { require("telescope.builtin").lsp_references, desc = "Find References" }<M-.<M-.
 maps.n["<D-.>y"] = { require("telescope.builtin").lsp_references, desc = "Rename Symbol" }
 
 maps.n["<D-.>t"] = { require("jdtls").test_nearest_method, desc = "Run test" }
