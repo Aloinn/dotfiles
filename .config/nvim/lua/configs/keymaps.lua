@@ -8,7 +8,7 @@ map("n", "D", "dd")
 map("n", "<backspace>", "<C-o>")
 -- map("n", ";", ":", { desc = "CMD enter command mode"})
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
-map("n", "q", "<cmd>:bdelete<cr>", { desc = "close" })
+map("n", "Q", "<cmd>:bdelete<cr>", { desc = "close" })
 
 -- vnoremap < <gv
 -- vnoremap > >gv

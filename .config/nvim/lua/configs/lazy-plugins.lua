@@ -13,6 +13,8 @@ end
 
 require("lazy").setup({
     require("plugins.lsppreview"),
+    require("plugins.indent"),
+    require("plugins.bookmarks"),
     require("plugins.projects"),
     require("plugins.dashboard"),
     require("plugins.sessions"),

@@ -62,9 +62,9 @@ return {
     config = function(_, opts)
         dofile(vim.g.base46_cache .. "telescope")
         require("telescope").setup(opts)
-
         pcall(require("telescope").load_extension, "fzf")
         pcall(require("telescope").load_extension, "ui-select")
+        pcall(require("telescope").load_extension, "projects")
 
         local map = vim.keymap.set
         local builtin = require("telescope.builtin")

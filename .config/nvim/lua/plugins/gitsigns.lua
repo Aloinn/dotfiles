@@ -33,7 +33,7 @@ return {
                 end, { desc = "diff against last commit" })
 
                 -- Toggles
-                map("n", "<M-e>b", gitsigns.toggle_current_line_blame, { desc = "[T]oggle git show [b]lame line" })
+                map("n", "<M-e>b", gitsigns.toggle_current_line_blame, { desc = "toggle blame line" })
                 -- map("n", "<leader>tD", gitsigns.preview_hunk_inline, { desc = "[T]oggle git show [D]eleted" })
             end,
         }

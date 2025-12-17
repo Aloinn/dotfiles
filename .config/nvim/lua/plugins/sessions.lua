@@ -6,11 +6,15 @@ return {
   ---@module "auto-session"
   ---@type AutoSession.Config
   keys = {
-        {"<M-f>S", "<cmd>AutoSession search<CR>"}
+        {"<M-o>", "<cmd>AutoSession search<CR>"}
     },
   opts = {
     session_lens = {
-        picker = "telescope"
+        picker = "telescope",
+        picker_opts = {
+
+
+            }
     },
     suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
     -- log_level = 'debug',

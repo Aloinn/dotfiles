@@ -20,7 +20,6 @@ return
 
 
       local get_icon = require("utils.ui").get_icon
-
       dashboard.section.header.opts.hl = "DashboardHeader"
       vim.cmd("highlight DashboardHeader guifg=#F7778F")
 
@@ -40,20 +39,20 @@ return
         -- yazi_button,
         dashboard.button("s",
           get_icon("GreeterSessions") .. " Sessions",
-          "<cmd>Telescope persisted<CR>"
+          "<cmd>Telescope sessions-lens<CR>"
         ),
-        dashboard.button("p",
-          get_icon("GreeterProjects") .. " Projects",
-          "<cmd>Telescope projects<CR>"),
-        dashboard.button("b",
-          get_icon("GreeterBookmarks") .. " Bookmarks",
-          "<cmd>Telescope bookmarks<CR>"),  
-        dashboard.button("t", 
-          get_icon("GreeterTerminal") .. " Terminal", "<cmd>exit<CR>"),
+        -- dashboard.button("p",
+          -- get_icon("GreeterProjects") .. " Projects",
+          -- "<cmd>Telescope projects<CR>"),
+        -- dashboard.button("b",
+          -- get_icon("GreeterBookmarks") .. " Bookmarks",
+          -- "<cmd>Telescope bookmarks<CR>"),  
+        -- dashboard.button("t", 
+          -- get_icon("GreeterTerminal") .. " Terminal", "<cmd>exit<CR>"),
         -- dashboard.button("", ""),
-        dashboard.button("y",
-          get_icon("GreeterYabai") .. " Yabai",
-          "<cmd>YabaiWindows<CR>"),  
+        -- dashboard.button("y",
+          -- get_icon("GreeterYabai") .. " Yabai",
+          -- "<cmd>YabaiWindows<CR>"),  
         dashboard.button("q", "   ", "<cmd>exit<CR>"),
       }
 
