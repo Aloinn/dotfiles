@@ -31,10 +31,18 @@ return {
             treeview = {
                 window_split_dimension = 60,
                 keymap = {
-                  -- ["."] = {
-                    -- action = "toggle",
-                    -- desc = "Toggle list expansion or go to bookmark location"
-                  -- },
+                   ["v"] = {
+                    action = "paste",
+                    desc = "Toggle list expansion or go to bookmark location"
+                  },
+                  ["p"] = {
+                    action = "preview",
+                    desc = "Toggle list expansion or go to bookmark location"
+                  },
+                  ["R"] = {
+                    action = "reverse",
+                    desc = "Toggle list expansion or go to bookmark location"
+                  },
                 }
             }
         } -- check the "./lua/bookmarks/default-config.lua" file for all the options
