@@ -13,7 +13,7 @@ return {
   },
     keys = {
         { "\\l", "<cmd>BookmarksGoto<cr>", desc = "List", mode = {"n"} },
-        { "\\\\", "<cmd>BookmarksTree<cr>", desc = "Tree", mode = {"n"} },
+        { "\\-", "<cmd>BookmarksTree<cr>", desc = "Tree", mode = {"n"} },
         { "\\]", "<cmd>BookmarksGotoNext<cr>", desc = "Next", mode = {"n"} },
         { "\\[", "<cmd>BookmarksGotoPrev<cr>", desc = "Prev", mode = {"n"} },
         { "\\b", "<cmd>BookmarksMark<cr>", desc = "Bookmark", mode = {"n"} },

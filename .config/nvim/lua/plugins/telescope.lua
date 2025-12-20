@@ -27,6 +27,7 @@ return {
         dofile(vim.g.base46_cache .. "telescope")
         return {
             defaults = {
+                path_display = { "filename_first" },
                 prompt_prefix = "   ",
                 selection_caret = " ",
                 entry_prefix = " ",
