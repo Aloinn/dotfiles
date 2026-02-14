@@ -32,13 +32,18 @@ map("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
 map("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
 map("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
 
+map("n", "<leader>a", "<cmd> TmuxNavigateLeft<CR>", { desc = "window left" })
+map("n", "<leader>s", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
+map("n", "<leader>w", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
+map("n", "<leader>d", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
+
+
 map("i", "<C-a>", "<ESC>^i", { desc = "move beginning of line" })
 map("i", "<C-e>", "<End>", { desc = "move end of line" })
 map("i", "<C-h>", "<Left>", { desc = "move left" })
 map("i", "<C-j>", "<Down>", { desc = "move down" })
 map("i", "<C-k>", "<Up>", { desc = "move up" })
 map("i", "<C-l>", "<Right>", { desc = "move right" })
-
 -- ╭──────────────────────────────────────────────╮
 -- │                  Tabufline                   │
 -- ╰──────────────────────────────────────────────╯

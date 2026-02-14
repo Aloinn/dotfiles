@@ -12,8 +12,8 @@ return {
     -- {"GeorgesAlkhouri/nvim-aider"} -- optional: for Aider integration
   },
     keys = {
-        { "\\l", "<cmd>BookmarksGoto<cr>", desc = "List", mode = {"n"} },
-        { "\\-", "<cmd>BookmarksTree<cr>", desc = "Tree", mode = {"n"} },
+        { "<M-f>b", "<cmd>BookmarksGoto<cr>", desc = "List", mode = {"n"} },
+        { "B", "<cmd>BookmarksTree<cr>", desc = "Tree", mode = {"n"} },
         { "\\]", "<cmd>BookmarksGotoNext<cr>", desc = "Next", mode = {"n"} },
         { "\\[", "<cmd>BookmarksGotoPrev<cr>", desc = "Prev", mode = {"n"} },
         { "\\b", "<cmd>BookmarksMark<cr>", desc = "Bookmark", mode = {"n"} },
@@ -29,7 +29,7 @@ return {
                 }
             },
             treeview = {
-                window_split_dimension = 60,
+                window_split_dimension = 80,
                 keymap = {
                    ["v"] = {
                     action = "paste",
@@ -43,6 +43,17 @@ return {
                     action = "reverse",
                     desc = "Toggle list expansion or go to bookmark location"
                   },
+                    ["<C-m>"] = {
+                        action="go"
+                    },
+                          ["<S-Up>"] = {
+        action = "move_up",
+        desc = "Move current node up in the list"
+      },
+      ["<S-Down>"] = {
+        action = "move_down",
+        desc = "Move current node down in the list"
+      },
                 }
             }
         } -- check the "./lua/bookmarks/default-config.lua" file for all the options

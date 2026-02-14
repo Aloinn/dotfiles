@@ -42,6 +42,7 @@ require("lazy").setup({
     require("plugins.hop"),
     require("plugins.trouble"),
     require("plugins.highlight"),
+    -- require("plugins.fold"),
 }, {
     defaults = { lazy = true },
     install = { colorscheme = { "nvchad" } },

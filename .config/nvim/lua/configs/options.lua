@@ -29,7 +29,7 @@ o.updatetime = 250
 -- go to previous/next line with h,l,left arrow and right arrow
 -- when cursor reaches end/beginning of line
 opt.whichwrap:append("<>[]hl")
-
+opt.wrap = false
 opt.colorcolumn = "100000"
 
 -- ╭──────────────────────────────────────────────╮
@@ -60,7 +60,7 @@ o.mousescroll = "ver:1,hor:6"
 o.number = true
 o.numberwidth = 2
 o.ruler = false
-opt.relativenumber = true
+opt.relativenumber = false
 
 -- ╭──────────────────────────────────────────────╮
 -- │                 Providers                    │

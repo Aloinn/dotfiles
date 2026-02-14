@@ -7,7 +7,8 @@ local find_or_create_project_bookmark_group = function()
     return
   end
 
-  local project_name = string.gsub(project_root, "^" .. os.getenv("HOME") .. "/", "")
+  -- local project_name = string.gsub(project_root, "^" .. os.getenv("HOME") .. "/", "")
+  local project_name = project_root:match("([^/]+)$")
   local Service = require("bookmarks.domain.service")
   local Repo = require("bookmarks.domain.repo")
   local bookmark_list = nil
@@ -75,6 +76,10 @@ vim.api.nvim_set_hl(0, "YankHighlight", {
 
 -- DASH
 -- if is_available "alpha-nvim" then
+local helpers = require("utils.hinter")
+
+local helpers = require("utils.logreader")
+
 local helpers = require("utils.helpers")
 local is_available = helpers.is_available
 if is_available "alpha-nvim" then
