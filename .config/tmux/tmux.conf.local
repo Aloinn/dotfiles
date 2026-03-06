@@ -71,7 +71,8 @@ tmux_conf_new_pane_reconnect_ssh=false
 # see https://github.com/termstandard/colors
 tmux_conf_24b_colour=auto
 set -g mouse on
-
+set -g set-clipboard on
+set -g allow-passthrough on
 
 # -- theming -------------------------------------------------------------------
 
@@ -550,9 +551,7 @@ bind -T prefix S-Tab if-shell \
 # # usage: #{wan_ip_v6}
 # wan_ip_v6() {
 #   curl -f -s -m 2 -6 ifconfig.me
-#   sleep 300                                         # sleep for 5 minutes, throttle network requests whatever the value of status-interval
-# }
-#
+#   sleep 300                                         # sleep for 5 minutes, throttle network requests whatever the value of status-intervaltrue#
 # # usage: #{github_stars}, #{github_stars tmux/tmux}, ...
 # github_stars() {
 #   repository=${1##*https://github.com/}

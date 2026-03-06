@@ -106,6 +106,17 @@ map("n", "<M-e>r", function()
     end
 end, { desc = "Relative number" })
 
+-- Function to run a Vim command and copy its output to clipboard
+local function g_browse_to_clipboard()
+    -- run the command and capture output
+    local output = vim.fn.execute("GBrowse") -- captures stdout as a list
+    output = output:gsub("%s+$", "")
+
+    -- save to system clipboard
+    vim.fn.setreg('+', output)   -- '+' is system clipboard
+    print(output)
+end
+map("n", "<M-f>c", g_browse_to_clipboard, { desc="Copy amazon code link", noremap=true})
 -- map("n", "<M-e>c", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
 --
 -- map("n", "<M-e>h", function()

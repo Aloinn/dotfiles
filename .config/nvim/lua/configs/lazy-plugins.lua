@@ -13,6 +13,10 @@ end
 
 require("lazy").setup({
     require("plugins.lsppreview"),
+    require("plugins.neotest"),
+    require("plugins.minimap"),
+    require("plugins.scrollbar"),
+    require("plugins.amazonbrowse"),
     require("plugins.outline"),
     require("plugins.illuminate"),
     require("plugins.indent"),

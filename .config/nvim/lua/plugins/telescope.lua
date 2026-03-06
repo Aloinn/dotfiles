@@ -69,12 +69,33 @@ return {
 
         local map = vim.keymap.set
         local builtin = require("telescope.builtin")
+        local actions = require("telescope.actions")
+      local show_hidden = false
 
         map("n", "<M-f>h", builtin.help_tags, { desc = "Help" })
         map("n", "<M-f>k", builtin.keymaps, { desc = "Keymaps" })
         map("n", "?", builtin.keymaps, { desc = "Keymaps" })
-        map("n", "<M-f>p", builtin.find_files, { desc = "Files" })
-        map("n", "<M-p>", builtin.find_files, { desc = "Files" })
+        -- map("n", "<M-f>p", builtin.find_files, { desc = "Files" })
+        local function open_find_files()
+            builtin.find_files({
+              hidden = show_hidden,
+
+              attach_mappings = function(prompt_bufnr, _map)
+                local function toggle_hidden()
+                  show_hidden = not show_hidden
+                  actions.close(prompt_bufnr)
+                  open_find_files() -- reopen with SAME mappings
+                end
+
+                _map("i", "<M-p>", toggle_hidden)
+                _map("n", "<M-p>", toggle_hidden)
+                return true
+              end,
+            })
+        end
+        map("n", "<M-p>", open_find_files, { desc ="Find files"})
+        -- map("n", "<M-f>z", function() builtin.find_files({hidden = true}) end, { desc = "Files" })
+        -- map("n", "<M-p>", builtin.find_files, { desc = "Files" })
         map("n", "<M-f>s", builtin.builtin, { desc = "Select Telescope" })
         map("n", "<M-f>w", builtin.grep_string, { desc = "current Word" })
         map("n", "<M-f>g", builtin.live_grep, { desc = "by Grep" })
