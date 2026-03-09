@@ -110,8 +110,7 @@ end, { desc = "Relative number" })
 local function g_browse_to_clipboard()
     -- run the command and capture output
     local output = vim.fn.execute("GBrowse") -- captures stdout as a list
-    output = output:gsub("%s+$", "")
-
+    output = output:gsub("%s+$", "") .. "#L" .. vim.api.nvim_win_get_cursor(0)[1]
     -- save to system clipboard
     vim.fn.setreg('+', output)   -- '+' is system clipboard
     print(output)

@@ -70,21 +70,24 @@ return {
         local map = vim.keymap.set
         local builtin = require("telescope.builtin")
         local actions = require("telescope.actions")
-      local show_hidden = false
+        local show_hidden = false
 
         map("n", "<M-f>h", builtin.help_tags, { desc = "Help" })
         map("n", "<M-f>k", builtin.keymaps, { desc = "Keymaps" })
         map("n", "?", builtin.keymaps, { desc = "Keymaps" })
         -- map("n", "<M-f>p", builtin.find_files, { desc = "Files" })
-        local function open_find_files()
+        local function open_find_files(text)
             builtin.find_files({
-              hidden = show_hidden,
+                hidden = show_hidden,
+                default_text=text,
 
-              attach_mappings = function(prompt_bufnr, _map)
+                attach_mappings = function(prompt_bufnr, _map)
                 local function toggle_hidden()
-                  show_hidden = not show_hidden
-                  actions.close(prompt_bufnr)
-                  open_find_files() -- reopen with SAME mappings
+                    show_hidden = not show_hidden
+                    local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+                    local current_prompt = current_picker:_get_prompt()
+                    actions.close(prompt_bufnr)
+                    open_find_files(current_prompt) -- reopen with SAME mappings
                 end
 
                 _map("i", "<M-p>", toggle_hidden)

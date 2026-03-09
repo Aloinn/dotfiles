@@ -26,11 +26,11 @@ return {
                 map("n", ",p", gitsigns.preview_hunk, { desc = "hunk preview" })
                 map("n", ",b", gitsigns.blame_line, { desc = "blame line" })
                 -- map("n", ",d", gitsigns.diffthis, { desc = "diff against index" })
-                map("n", ",[", "<cmd>Gitsigns nav_hunk prev<CR>", { desc = "hunk prev" })
-                map("n", ",]", "<cmd>Gitsigns nav_hunk next<CR>", { desc = "hunk next" })
-                map("n", ",d", function()
-                    gitsigns.diffthis("@")
-                end, { desc = "diff against last commit" })
+                map("n", "[", "<cmd>Gitsigns nav_hunk prev<CR>", { desc = "hunk prev" })
+                map("n", "]", "<cmd>Gitsigns nav_hunk next<CR>", { desc = "hunk next" })
+                -- map("n", ",d", function()
+                    -- gitsigns.diffthis("@")
+                -- end, { desc = "diff against last commit" })
 
                 -- Toggles
                 map("n", "<M-e>b", gitsigns.toggle_current_line_blame, { desc = "toggle blame line" })

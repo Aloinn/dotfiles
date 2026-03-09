@@ -33,6 +33,7 @@ require("lazy").setup({
     require("plugins.nvim-web-devicons"),
     require("plugins.indent-blankline"),
     require("plugins.nvim-tree"),
+    require("plugins.sidebar"),
     require("plugins.conform"),
     require("plugins.which-key"),
     require("plugins.gitsigns"),
