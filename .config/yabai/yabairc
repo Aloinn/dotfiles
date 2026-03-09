@@ -1,0 +1,50 @@
+# default layout (can be bsp, stack or float)
+yabai -m config layout bsp
+
+# New window spawns to the right if vertical split, or bottom if horizontal split
+yabai -m config window_placement second_child
+
+# padding set to 12px
+yabai -m config top_padding 12
+yabai -m config bottom_padding 12
+yabai -m config left_padding 12
+yabai -m config right_padding 12
+yabai -m config window_gap 12
+
+# center mouse on window with focus
+yabai -m config mouse_follows_focus on
+
+# modifier for clicking and dragging with mouse
+yabai -m config mouse_modifier alt
+# set modifier + left-click drag to move window
+yabai -m config mouse_action1 move
+# set modifier + right-click drag to resize window
+yabai -m config mouse_action2 resize
+
+# when window is dropped in center of another window, swap them (on edges it will split it)
+yabai -m mouse_drop_action swap
+
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^Karabiner-Elements$" manage=off
+yabai -m rule --add app="^Cisco AnyConnect Secure Mobility Client$" manage=off
+yabai -m rule --add app="^Amazon Chime$" manage=off
+yabai -m rule --add app="^iTerm2" manage=off
+
+yabai -m config external_bar all:50:0
+
+yabai -m config window_shadow off
+
+borders active_color=0xffffffffe width=15.0 & hidpi=true
+# yabai -m rule --add app="kitty" title="^kitty-popup$" manage=off layer=above sticky=on
+# yabai -m rule --add title="^popup-term$" manage=off sticky=on layer=above border=on
+yabai -m signal --add event=window_created action='
+  if yabai -m query --windows --window $YABAI_WINDOW_ID | jq -e \
+    ".title == \"popup-term\"" >/dev/null; then
+    yabai -m window $YABAI_WINDOW_ID --toggle float
+    yabai -m window $YABAI_WINDOW_ID --toggle sticky
+    yabai -m window $YABAI_WINDOW_ID --layer above
+    yabai -m window $YABAI_WINDOW_ID --border on
+  fi
+'
+

@@ -513,7 +513,12 @@ bind -T prefix S-Tab if-shell \
   "[[ \$(tmux list-windows | wc -l) -gt 1 ]]" \
   "previous-window" \
   "switch-client -p"
+bind x kill-window -a
 
+bind g display-popup -d "#{pane_current_path}" -xC -yC -w95% -h95% -E "lazygit"
+
+unbind q
+# bind q display-popup -d "#{pane_current_path}" -xC -yC -w95% -h95% -E "q"
 # -- custom variables ----------------------------------------------------------
 
 # to define a custom #{foo} variable, define a POSIX shell function between the
