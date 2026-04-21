@@ -14,8 +14,11 @@ end
 require("lazy").setup({
     require("plugins.lsppreview"),
     require("plugins.neotest"),
-    require("plugins.minimap"),
+    require("plugins.smartpaste"),
+    require("plugins.diff"),
+    -- require("plugins.minimap"),
     require("plugins.scrollbar"),
+    require("plugins.smoothscroll"),
     require("plugins.amazonbrowse"),
     require("plugins.outline"),
     require("plugins.illuminate"),

@@ -1,5 +1,12 @@
 ---@type ChadrcConfig
 local M = {
+    ui = {
+        tabufline = { enabled = false},
+        statusline = {
+            theme = "vscode_colored",
+            -- order = { "mode", "%F", "git", "%=", "lsp_msg", "%=", "lsp", "cwd" },
+        }
+    },
     base46 = {
         theme = "everforest",
     },

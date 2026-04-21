@@ -5,7 +5,7 @@ local g = vim.g
 -- ╭──────────────────────────────────────────────╮
 -- │                  General                     │
 -- ╰──────────────────────────────────────────────╯
-
+o.cmdheight = 0
 o.winborder = "rounded"
 o.laststatus = 3
 o.showmode = false
