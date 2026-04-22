@@ -13,6 +13,7 @@ end
 
 require("lazy").setup({
     require("plugins.lsppreview"),
+    require("plugins.vuffer"),
     require("plugins.neotest"),
     require("plugins.smartpaste"),
     require("plugins.diff"),

@@ -107,7 +107,7 @@ return {
         map("n", "<M-f>r", builtin.resume, { desc = "Resume" })
         map("n", "<M-f>.", builtin.oldfiles, { desc = 'Recent Files ("." for repeat)' })
         -- map("n", "<M-f>b", builtin.buffers, { desc = "Buffers" })
-        map("n", "<M-b>", builtin.buffers, { desc = "Buffers" })
+        -- map("n", "<M-b>", builtin.buffers, { desc = "Buffers" })
         map("n", "<M-f>c", builtin.git_commits, { desc = "Commits" })
         map("n", "<M-f>t", builtin.git_status, { desc = "status" })
 
