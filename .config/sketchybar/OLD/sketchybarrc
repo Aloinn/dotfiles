@@ -1,0 +1,74 @@
+#!/bin/zsh
+
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+source "$CONFIG_DIR/colors.sh"
+# source "/Users/alainlam/Downloads/sketchybar-app-font/dist/icon_map.sh"
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+ITEM_DIR="$CONFIG_DIR/items"
+source "$CONFIG_DIR/icon_map.sh"
+
+# sketchybar --bar position=bottom height=50 blur_radius=30 color=$C_DIM topmost=true
+
+##### Adding Left Items #####
+# We add some regular items to the left side of the bar, where
+# only the properties deviating from the current defaults need to be set
+
+
+# source "$ITEM_DIR/space.sh"
+
+# CURRENT_SPACES="$(yabai -m query --displays | jq -r '.[].spaces | @sh')"
+# while read -r line
+#   echo "HI"
+# do
+
+##### Force all scripts to run the first time (never do this in a script) #####
+
+default=(
+  padding_left=2
+  padding_right=2
+  icon.font="sketchybar-app-font:Regular:16.0"
+  label.font="Comic Mono:Bold:16.0"
+  background.corner_radius=5
+  background.height=30
+  icon.color=0xffffffff
+  label.color=0xffffffff
+  icon.padding_left=2
+  icon.padding_right=2
+  label.padding_left=2
+  label.padding_right=2
+)
+
+# sketchybar --default "${default[@]}"
+
+# source "$ITEM_DIR/test3.sh"
+# source "$ITEM_DIR/front_app.sh"
+
+
+# $($ITEM_DIR/test2.sh)
+
+# sketchybar --update
+
+
+# CURRENT_SPACES="$(yabai -m query --displays | jq -r '.[].spaces | @sh')"
+# args=()
+# while read -r line
+# do
+#   for space in $line
+#   do
+#     # icon_strip=" "
+#     # apps=$(yabai -m query --windows --space $space | jq -r ".[].app")
+#     # if [ "$apps" != "" ]; then
+#     #   while IFS= read -r app; do
+#     #     icon_strip+=" $(__icon_map('Code'))"
+#     #   done <<< "$apps"
+#     # fi
+#     args+=(--set space.$space label="$(__icon_map('Code')" label.drawing=on)
+#   done
+# done <<< "$CURRENT_SPACES"
+
+# sketchybar -m "${args[@]}"
