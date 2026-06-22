@@ -52,7 +52,7 @@ alias bbra='bbr apollo-pkg'
 export PATH=$HOME/.toolbox/bin:$PATH
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
@@ -74,7 +74,7 @@ zinit light junegunn/fzf
 
 # load key bindings + completion
 zinit ice wait lucid
-zinit light junegunn/fzf/shell
+# zinit light junegunn/fzf/shell
 zinit light-mode for \
     zdharma-continuum/zinit-annex-as-monitor \
     zdharma-continuum/zinit-annex-bin-gem-node \
@@ -104,8 +104,8 @@ get_package () {
 autoload -Uz compinit && compinit
 
 # Set up mise for runtime management
-eval "$(/home/alainlam/.local/bin/mise activate zsh)"
-source ~/.local/share/mise/completions.zsh
+# eval "$(/home/alainlam/.local/bin/mise activate zsh)"
+# source ~/.local/share/mise/completions.zsh
 alias finch='sudo HOME=/home/alainlam DOCKER_CONFIG=/home/alainlam/.docker finch'
 
 export PATH="$HOME/.local/bin:$PATH"
