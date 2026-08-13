@@ -131,3 +131,7 @@ alias tma="tmux attach-session -t"
 alias qc='source ~/scripts/create_date_folder.sh'
 alias lh='/apollo/env/envImprovement/bin/expand-hostclass -r --hosts-only'
 alias ddb="/apollo/bin/env -e MechanicBigBirdCli /apollo/env/MechanicBigBirdCli/bin/mechanic-cli"
+
+# Connect
+alias c2="ssh dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com"
+alias c="ssh dev-dsk-alainlam-2c-cfa72de5.us-west-2.amazon.com" 
