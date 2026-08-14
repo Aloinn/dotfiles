@@ -54,38 +54,12 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-### Added by Zinit's installer
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
-        print -P "%F{160} The clone has failed.%f%b"
-fi
+## zsh
+#
+export ZSH="$HOME/.oh-my-zsh"
+plugins=(git fzf zsh-syntax-highlighting)
+source $ZSH/oh-my-zsh.sh
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit ice depth=1
-zinit light junegunn/fzf
-
-# load key bindings + completion
-zinit ice wait lucid
-# zinit light junegunn/fzf/shell
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
-zle -N menu-search
-zle -N recent-paths
-### End of Zinit's installer chunk
-## Zinit plugins
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit light zdharma-continuum/fast-syntax-highlighting
 bindkey "˙" fzf-history-widget
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -129,9 +103,48 @@ alias tma="tmux attach-session -t"
 
 # Personal
 alias qc='source ~/scripts/create_date_folder.sh'
+alias qcn='source ~/scripts/create_date_folder.sh -n'
 alias lh='/apollo/env/envImprovement/bin/expand-hostclass -r --hosts-only'
 alias ddb="/apollo/bin/env -e MechanicBigBirdCli /apollo/env/MechanicBigBirdCli/bin/mechanic-cli"
 
-# Connect
-alias c2="ssh dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com"
-alias c="ssh dev-dsk-alainlam-2c-cfa72de5.us-west-2.amazon.com" 
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+## Editor
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+export PATH=$HOME/.rbenv/bin:$PATH
+eval "$(rbenv init -)"
+
+## DdbStorageApiOncallTools
+source /apollo/env/DdbStorageApiOncallTools/lib/sim.sh
+source /apollo/env/DdbStorageApiOncallTools/lib/checkhelp.sh
+## KVPC
+ function ssh2hc-kvpc() {
+      hostclass=$1
+      # Get a host from the hostclass to SSH to
+      host=$(/apollo/env/envImprovement/bin/expand-hostclass --hosts-only --one-host $hostclass)
+  
+      # Figure out the region from the hostclass
+      region=''
+      temp=$hostclass
+      while [[ $temp =~ '\b(\w{3})\b' ]]; do
+          region=($(echo $match[1] | tr 'A-Z' 'a-z'))
+  
+          # Use RIP to check if the three letter combination is a valid region
+          ripData=$(echo $(ripcli -r "$region" -a status))
+          if [[ "$ripData" != "Region not found" ]]; then
+              break
+          fi  
+          
+          # Remove the match and look for next match
+          temp=${temp#*$match[1]}
+      done
+      
+      catalyst_bastion_host='catalyst-prod-bastion-'$region'.ec2.amazon.com'
+      ssh -A -J $catalyst_bastion_host $host
+  }
+
+alias wiki="cd /home/alainlam/code/AlainlamWiki/src/AlainlamWiki/root"
+alias ct="~/scripts/ct.sh"
