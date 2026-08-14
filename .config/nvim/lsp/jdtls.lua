@@ -12,7 +12,7 @@ local api = vim.api
 
 -- The path to my jdtls instalation directory, this is the root directory for many of the files 
 -- needed by jdtls and is used in many of the variables below
-local jdtls_install = vim.env.HOMEBREW_PREFIX .. "/opt/jdtls"
+local jdtls_install = (vim.env.HOMEBREW_PREFIX or "/home/linuxbrew/.linuxbrew") .. "/opt/jdtls"
 
 -- jdtls uses a data directory to cache indexing data. By default it will create this
 -- directory automatically in some temporary directory that gets cleared out on system resart.
@@ -232,6 +232,10 @@ local settings = {
         },
         format = {
             enabled = false,
+            settings = {
+                url = vim.env.HOME .. "/dotfiles/java/formatting/format.xml",
+                profile = "AmazonJavaFormat",
+            },
         },
     },
     signatureHelp = {

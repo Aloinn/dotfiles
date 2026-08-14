@@ -1,5 +1,6 @@
 return {
     "nvim-treesitter/nvim-treesitter",
+    commit = "42fc28b",
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",

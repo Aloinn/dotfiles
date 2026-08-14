@@ -106,17 +106,21 @@ map("n", "<M-e>r", function()
     end
 end, { desc = "Relative number" })
 
+map("n", "<M-e>w", function()
+    vim.wo.wrap = not vim.wo.wrap
+end, { desc = "Word wrap" })
+
 -- Function to run a Vim command and copy its output to clipboard
 local function g_browse_to_clipboard()
     -- run the command and capture output
-    local output = vim.fn.execute("GBrowse") -- captures stdout as a list
+    local output = vim.fn.execute("GBrowse!") -- captures stdout as a list
     output = output:gsub("%s+$", "") .. "#L" .. vim.api.nvim_win_get_cursor(0)[1]
     -- save to system clipboard
     vim.fn.setreg('+', output)   -- '+' is system clipboard
     print(output)
 end
-map("n", "<M-f>c", g_browse_to_clipboard, { desc="Copy amazon code link", noremap=true})
--- map("n", "<M-e>c", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
+    map("n", "<M-f>c", g_browse_to_clipboard, { desc="Copy amazon code link", noremap=true})
+    -- map("n", "<M-e>c", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
 --
 -- map("n", "<M-e>h", function()
 --     require("nvchad.themes").open()

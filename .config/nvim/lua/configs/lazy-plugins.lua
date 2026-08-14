@@ -53,6 +53,7 @@ require("lazy").setup({
     require("plugins.highlight"),
     -- require("plugins.sessions"),
     require("plugins.sidebar"),
+    require("plugins.lc"),
     -- require("plugins.fold"),
 }, {
     defaults = { lazy = true },
