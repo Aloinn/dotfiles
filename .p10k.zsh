@@ -215,7 +215,12 @@
 
   ##################################[ dir: current directory ]##################################
   # Current directory background color.
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND=14
+  # Cyan (14) on remote dev desktops, blue (12) otherwise.
+  if [[ $HOST == dev-dsk-alainlam* ]]; then
+    typeset -g POWERLEVEL9K_DIR_BACKGROUND=14
+  else
+    typeset -g POWERLEVEL9K_DIR_BACKGROUND=12
+  fi
   # Default current directory foreground color.
   typeset -g POWERLEVEL9K_DIR_FOREGROUND=254
   # If directory is too long, shorten some of its segments to the shortest possible unique
