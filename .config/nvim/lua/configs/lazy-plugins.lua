@@ -12,6 +12,7 @@ vim.keymap.set = function(mode, lhs, rhs, opts)
 end
 
 require("lazy").setup({
+    require("plugins.transparent"),
     require("plugins.lsppreview"),
     require("plugins.vuffer"),
     require("plugins.neotest"),

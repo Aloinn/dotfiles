@@ -1,6 +1,7 @@
 ---@type ChadrcConfig
 local M = {
     ui = {
+        transparency = true,
         tabufline = { enabled = false},
         statusline = {
             theme = "vscode_colored",
