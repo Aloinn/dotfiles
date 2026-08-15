@@ -120,6 +120,27 @@ local function g_browse_to_clipboard()
     print(output)
 end
     map("n", "<M-f>c", g_browse_to_clipboard, { desc="Copy amazon code link", noremap=true})
+
+local function code_search_to_clipboard()
+    local term = vim.fn.expand("<cword>")
+    local url = "https://code.amazon.com/search?term=" .. vim.fn.shellescape(term, true):gsub("'", "")
+    vim.fn.setreg('+', url)
+    print(url)
+end
+
+local function code_search_visual_to_clipboard()
+    -- get visual selection
+    vim.cmd('normal! "vy')
+    local term = vim.fn.getreg("v")
+    term = term:gsub("\n", " "):gsub("%s+$", "")
+    local encoded = term:gsub(" ", "+")
+    local url = "https://code.amazon.com/search?term=" .. encoded
+    vim.fn.setreg('+', url)
+    print(url)
+end
+
+map("n", "<M-f>w", code_search_to_clipboard, { desc = "Copy code search link (word)", noremap = true })
+map("x", "<M-f>w", code_search_visual_to_clipboard, { desc = "Copy code search link (selection)", noremap = true })
     -- map("n", "<M-e>c", "<cmd>NvCheatsheet<CR>", { desc = "[T]oggle [C]heatsheet" })
 --
 -- map("n", "<M-e>h", function()
