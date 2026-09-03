@@ -476,10 +476,35 @@ unbind x
 unbind q
 # set -g @plugin 'alexwforsythe/tmux-which-key'
 # set -g @plugin '2kabhishek/tmux-tea'
-# set -g @plugin 'schasse/tmux-jump'
-# set -g @jump-key 'Enter'
-bind x "tmux switch-client -n || (tmux kill-session && tmux attach)"
-bind q kill-session
+set -g @plugin 'schasse/tmux-jump'
+set -g @jump-key 'f'
+unbind f
+
+unbind n
+bind n display-popup \
+  -w 80% \
+  -h 80% \
+  "tmux new-session -A -s popup_notes 'source /home/alainlam/scripts/create_date_folder.sh -n'"
+
+unbind g
+bind g display-popup \
+  -d "#{pane_current_path}" \
+  -w 80% \
+  -h 80% \
+  -E "/home/linuxbrew/.linuxbrew/bin/lazygit"
+
+unbind p
+bind p display-popup \
+  -w 80% \
+  -h 80% \
+  "tmux new-session -A -s popup "
+
+# Copy last output
+bind-key y copy-mode \; send-keys -X previous-prompt \; send-keys -X begin-selection \; send-keys -X next-prompt
+
+set -g allow-passthrough on
+# bind x "tmux switch-client -n || (tmux kill-session && tmux attach)"
+# bind q kill-session
 
 # PANES
 ## Unbind the defaults (optional)
@@ -513,9 +538,8 @@ bind -T prefix S-Tab if-shell \
   "[[ \$(tmux list-windows | wc -l) -gt 1 ]]" \
   "previous-window" \
   "switch-client -p"
-bind x kill-window -a
+bind x kill-window
 
-bind g display-popup -d "#{pane_current_path}" -xC -yC -w95% -h95% -E "lazygit"
 
 unbind q
 # bind q display-popup -d "#{pane_current_path}" -xC -yC -w95% -h95% -E "q"
