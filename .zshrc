@@ -51,8 +51,8 @@ alias bbra='bbr apollo-pkg'
 
 export PATH=$HOME/.toolbox/bin:$PATH
 source ~/powerlevel10k/powerlevel10k.zsh-theme
-
-# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+export FZF_BASE=/path/to/fzf/install/dir
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
 ## zsh
 #
@@ -60,7 +60,6 @@ export ZSH="$HOME/.oh-my-zsh"
 plugins=(git fzf zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
-bindkey "˙" fzf-history-widget
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -148,3 +147,24 @@ source /apollo/env/DdbStorageApiOncallTools/lib/checkhelp.sh
 
 alias wiki="cd /home/alainlam/code/AlainlamWiki/src/AlainlamWiki/root"
 alias ct="~/scripts/ct.sh"
+
+# Fixing FZF widgets
+# # Unbind CTRL-T, CTRL-R, and ALT-C in Zsh
+bindkey -r '^T'
+bindkey -r '^R'
+bindkey -r '\M-c'
+
+bindkey "˙" fzf-history-widget
+bindkey "^H" fzf-history-widget
+bindkey "ƒ" fzf-cd-widget
+
+tmux-smart-attach() {
+    if [ -n "$TMUX" ]; then
+        echo "Already inside a tmux session!"
+    else
+        # Attaches to an existing session, or creates a new one if none exist
+        tmux attach-session -t base 2>/dev/null || tmux new-session -s base
+    fi
+}
+
+bindkey -s "6;9u" '^Utmux-smart-attach^M'
