@@ -88,8 +88,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_codeLens, event.buf) then
             vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "InsertLeave" }, {
-                callback = function(args)
-                    vim.lsp.codelens.refresh({ bufnr = args.buf })
+                buffer = event.buf,
+                callback = function()
+                    vim.lsp.codelens.refresh()
                 end,
             })
         end

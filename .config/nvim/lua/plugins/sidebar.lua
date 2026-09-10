@@ -9,7 +9,6 @@ return {
     sidebar.setup({
       disable_default_keybindings = 0,
       bindings = nil,
-      open = true,
       side = "left",
       initial_width = 35,
       hide_statusline = false,

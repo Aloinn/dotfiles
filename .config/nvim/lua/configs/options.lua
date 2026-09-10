@@ -10,6 +10,7 @@ o.winborder = "rounded"
 o.laststatus = 3
 o.showmode = false
 o.swapfile = false
+o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 o.clipboard = "unnamedplus"
 o.cursorline = true

@@ -8,7 +8,7 @@ map("n", "D", "dd")
 map("n", "<backspace>", "<C-o>")
 -- map("n", ";", ":", { desc = "CMD enter command mode"})
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "general clear highlights" })
-map("n", "Q", "<cmd>:bdelete<cr>", { desc = "close" })
+map("n", "Q", ":q!<cr>", { desc = "close" })
 
 -- vnoremap < <gv
 -- vnoremap > >gv
@@ -20,6 +20,19 @@ map("n", "<S-Tab>", "<<", { desc = "unindent line" })
 map("n", "U", "<C-r>", { desc = "redo" })
 map("n", "<M-z>", "u", { desc = "undo" })
 map("n", "<M-Z>", "<C-r>", { desc = "redo" })
+
+local function save_all()
+    vim.cmd("w")
+    -- Close sidebar so it doesn't get baked into session
+    local ok, sidebar = pcall(require, "sidebar-nvim")
+    if ok then sidebar.close() end
+    vim.cmd("Persisted save")
+    if ok then sidebar.open() end
+end
+map("n", "<M-s>", save_all, { desc = "save file + session" })
+map("i", "<M-s>", function() vim.cmd("stopinsert") save_all() end, { desc = "save file + session" })
+map("n", "<M-l>", "<cmd>Persisted load<CR>", { desc = "load session" , remap = false})
+
 
 map("n", "<M-/>", "gcc", { desc = "comment", remap = true})
 map("x", "<M-/>", "gc", { desc = "uncomment", remap = true})
