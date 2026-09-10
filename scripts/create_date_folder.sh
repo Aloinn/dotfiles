@@ -5,9 +5,13 @@ cd ~/scratch/$date_folder
 
 if [[ " $* " =~ " -n " ]]; then
     if [ ! -f today.md ]; then
-        echo "# [$date_folder] Notes" >> today.md
-        echo "" >> today.md
+        echo "# [$date_folder] Notes" >> '~/scratch/today.md'
+        echo "" >> '~/scratch/today.md'
     fi
 
-    nvim ./today.md
+    if [[ " $* " =~ " -p " ]]; then
+       echo "/home/alainlam/scratch/$date_folder/today.md"
+    else 
+        nvim ./today.md
+    fi
 fi

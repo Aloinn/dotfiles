@@ -71,7 +71,7 @@ tmux_conf_new_pane_reconnect_ssh=false
 # see https://github.com/termstandard/colors
 tmux_conf_24b_colour=auto
 set -g mouse on
-set -g set-clipboard on
+set -g set-clipboard external
 set -g allow-passthrough on
 
 # -- theming -------------------------------------------------------------------
@@ -470,21 +470,32 @@ tmux_conf_uninstall_plugins_on_reload=true
 # set -g @treemux-tree 'b'
 # set -g @plugin 'tmux-plugins/tmux-sidebar'
 # set -g @sidebar-tree-focus 'b'
+set -g @plugin 'cesarferreira/tmux.expose'
 
 unbind t
 unbind x
 unbind q
 # set -g @plugin 'alexwforsythe/tmux-which-key'
 # set -g @plugin '2kabhishek/tmux-tea'
-set -g @plugin 'schasse/tmux-jump'
-set -g @jump-key 'f'
-unbind f
+set -g @plugin 'fcsonline/tmux-thumbs'
+set -g @thumbs-key f
+set -g @thumbs-command '/home/alainlam/scripts/thumbs-copy.sh {}'
+set -g @thumbs-upcase-command 'tmux copy-mode; tmux send-keys -X search-backward -- "{}"'
+set -g @thumbs-fg-color yellow
+set -g @thumbs-bg-color default
+set -g @thumbs-hint-fg-color red
+set -g @thumbs-hint-bg-color default
+set -g @thumbs-regexp-1 '\S{6,}'
 
 unbind n
+# bind n display-popup \
+#   -w 80% \
+#   -h 80% -E \
+#   "tmux new-session -A -s popup_notes 'source /home/alainlam/scripts/create_date_folder.sh -n'"
 bind n display-popup \
   -w 80% \
-  -h 80% \
-  "tmux new-session -A -s popup_notes 'source /home/alainlam/scripts/create_date_folder.sh -n'"
+  -h 80% -E \
+  'qcnp=$(/home/alainlam/scripts/create_date_folder.sh -n -p ) && nvim $qcnp + -c "normal! o"'
 
 unbind g
 bind g display-popup \
@@ -499,12 +510,22 @@ bind p display-popup \
   -h 80% \
   "tmux new-session -A -s popup "
 
-# Copy last output
-bind-key y copy-mode \; send-keys -X previous-prompt \; send-keys -X begin-selection \; send-keys -X next-prompt
+# Select last command input+output by prompt pattern matching (works on local + remote)
+# xsel uninstalled from linuxbrew so gpakosz framework's if-b check fails and y is ours
+bind-key y run-shell '/home/alainlam/scripts/tmux-select-output.sh'
+bind-key Y run-shell '/home/alainlam/scripts/tmux-select-output.sh'
 
 set -g allow-passthrough on
 # bind x "tmux switch-client -n || (tmux kill-session && tmux attach)"
 # bind q kill-session
+
+# Quick edits configs
+
+bind C display-menu -T "#[align=centre]Dotfiles" -x C -y C \
+  ".zshrc"            z  "display-popup -d '~/dotfiles' -w 80% -h 80% -E 'nvim ~/.zshrc'" \
+  ".nvim"             n  "display-popup -d '~/dotfiles/.config/nvim' -w 80% -h 80% -E 'nvim ~/dotfiles/.config/nvim'" \
+  ".tmux.conf"        t  "display-popup -d '~/dotfiles/.config/tmux' -w 80% -h 80% -E 'nvim ~/dotfiles/.config/tmux/tmux.conf.local'" \
+  "Exit"              q  ""
 
 # PANES
 ## Unbind the defaults (optional)
@@ -542,55 +563,8 @@ bind x kill-window
 
 
 unbind q
-# bind q display-popup -d "#{pane_current_path}" -xC -yC -w95% -h95% -E "q"
-# -- custom variables ----------------------------------------------------------
 
-# to define a custom #{foo} variable, define a POSIX shell function between the
-# '# EOF' and the '# "$@"' lines. Please note that the opening brace { character
-# must be on the same line as the function name otherwise the parse won't detect
-# it.
-#
-# then, use #{foo} in e.g. the 'tmux_conf_theme_status_left' or the
-# 'tmux_conf_theme_status_right' variables.
-
-# ------------------------------------------------------------------------------
-
-# # /!\ do not remove the following line
-# EOF
-#
-# # /!\ do not "uncomment" the functions: the leading "# " characters are needed
-#
-# # usage: #{weather}
-# weather() {                                         # see https://github.com/chubin/wttr.in#one-line-output
-#   curl -f -s -m 2 'wttr.in?format=3' || printf '\n' # /!\ make sure curl is installed
-#   sleep 900                                         # sleep for 15 minutes, throttle network requests whatever the value of status-interval
-# }
-#
-# # usage: #{online}
-# online() {
-#   ping -c 1 1.1.1.1 >/dev/null 2>&1 && printf '✔' || printf '✘'
-# }
-#
-# # usage: #{wan_ip_v4}
-# wan_ip_v4() {
-#   curl -f -s -m 2 -4 ifconfig.me
-#   sleep 300                                         # sleep for 5 minutes, throttle network requests whatever the value of status-interval
-# }
-#
-# # usage: #{wan_ip_v6}
-# wan_ip_v6() {
-#   curl -f -s -m 2 -6 ifconfig.me
-#   sleep 300                                         # sleep for 5 minutes, throttle network requests whatever the value of status-intervaltrue#
-# # usage: #{github_stars}, #{github_stars tmux/tmux}, ...
-# github_stars() {
-#   repository=${1##*https://github.com/}
-#   repository=${repository%% *}
-#   repository=${repository%%.git}
-#   url="https://api.github.com/repos/${repository:-gpakosz/.tmux}"
-#   curl -s "$url" | perl -MJSON::PP=decode_json -CO -0777 -E '$response = decode_json(readline *STDIN); say ($response->{stargazers_count})'
-#   sleep 300                                         # sleep for 5 minutes, throttle network requests whatever the value of status-interval
-# }
-#
-# "$@"
-# # /!\ do not remove the previous line
-# #     do not write below this line
+## TMUX saving
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @continuum-restore 'on'
