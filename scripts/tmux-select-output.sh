@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # tmux-select-output.sh
-# Select the last command input + output: from the previous prompt line
-# through the last line before the current prompt.
-# Works on local (p10k) and remote hosts by detecting the actual prompt.
+# Select the last command + output: from after the prompt character on the
+# previous prompt line through the last line before the current prompt.
+# Works on local (p10k with ) and remote hosts (hostname% style).
 
 pane_id="${1:-}"
 [ -z "$pane_id" ] && pane_id=$(tmux display-message -p '#{pane_id}')
@@ -18,10 +18,7 @@ if [ -z "$last_line" ]; then
   exit 1
 fi
 
-# Strategy: use the entire last line (trimmed) as the literal search string.
-# This works because the current prompt is empty (no command typed yet),
-# so every occurrence of this exact string is a prompt line.
-# Trim trailing whitespace for cleaner matching.
+# Use the entire last line (trimmed) as the literal search string
 prompt_match=$(echo "$last_line" | sed 's/[[:space:]]*$//')
 
 if [ -z "$prompt_match" ]; then
@@ -29,13 +26,12 @@ if [ -z "$prompt_match" ]; then
   exit 1
 fi
 
-# Find all lines matching the prompt literally
+# Find all lines containing the prompt literally
 mapfile -t prompt_lines < <(echo "$content" | grep -nF "$prompt_match" | cut -d: -f1)
 
 count=${#prompt_lines[@]}
 if [ "$count" -lt 2 ]; then
-  # Fallback: try matching just the last 20 chars (handles cases where
-  # prompt has variable-width left segments like git branch, time, etc.)
+  # Fallback: try last 20 chars
   short_match="${prompt_match: -20}"
   if [ ${#short_match} -ge 3 ]; then
     mapfile -t prompt_lines < <(echo "$content" | grep -nF "$short_match" | cut -d: -f1)
@@ -44,15 +40,17 @@ if [ "$count" -lt 2 ]; then
 fi
 
 if [ "$count" -lt 2 ]; then
-  tmux display-message "Only found ${count} prompt(s) for: ${prompt_match:0:30}..."
+  tmux display-message "Only found ${count} prompt(s)"
   exit 1
 fi
 
-# prev_prompt = the prompt line where the command was typed (select FROM here)
-# last_prompt = current empty prompt (select TO the line before this)
 last_prompt=${prompt_lines[$((count - 1))]}
 prev_prompt=${prompt_lines[$((count - 2))]}
 
+# The previous prompt line has the command typed after it.
+# We want to select starting from the command text (after the prompt chars),
+# not the prompt decoration itself.
+# Output ends at last_prompt - 1.
 select_start=$prev_prompt
 select_end=$((last_prompt - 1))
 
@@ -62,12 +60,18 @@ if [ "$select_start" -gt "$select_end" ]; then
 fi
 
 total_lines=$(echo "$content" | wc -l)
-
-# Lines from bottom of capture to target positions
 up_to_end=$((total_lines - select_end))
 select_lines=$((select_end - select_start))
 
-# Enter copy mode from a known position (bottom)
+# Get the prev_prompt line content to find where the command starts
+prev_line=$(echo "$content" | sed -n "${prev_prompt}p")
+
+# Find the column position after the prompt match text.
+# The prev_prompt line = prompt_match + command_text
+# So the command starts at position len(prompt_match) + 1
+prompt_len=${#prompt_match}
+
+# Enter copy mode
 tmux copy-mode -t "$pane_id"
 tmux send-keys -t "$pane_id" -X cancel
 tmux copy-mode -t "$pane_id"
@@ -79,8 +83,13 @@ fi
 tmux send-keys -t "$pane_id" -X end-of-line
 tmux send-keys -t "$pane_id" -X begin-selection
 
-# Select up to the prompt line (inclusive — includes the command itself)
+# Select up to the command line
 if [ "$select_lines" -gt 0 ]; then
   tmux send-keys -t "$pane_id" -X -N "$select_lines" cursor-up
 fi
+
+# Position cursor after the prompt text (at start of command)
 tmux send-keys -t "$pane_id" -X start-of-line
+if [ "$prompt_len" -gt 0 ]; then
+  tmux send-keys -t "$pane_id" -X -N "$prompt_len" cursor-right
+fi
