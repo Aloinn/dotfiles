@@ -23,15 +23,11 @@ map("n", "<M-Z>", "<C-r>", { desc = "redo" })
 
 local function save_all()
     vim.cmd("w")
-    -- Close sidebar so it doesn't get baked into session
-    local ok, sidebar = pcall(require, "sidebar-nvim")
-    if ok then sidebar.close() end
-    vim.cmd("Persisted save")
-    if ok then sidebar.open() end
+    require("self_session").save()
 end
 map("n", "<M-s>", save_all, { desc = "save file + session" })
 map("i", "<M-s>", function() vim.cmd("stopinsert") save_all() end, { desc = "save file + session" })
-map("n", "<M-l>", "<cmd>Persisted load<CR>", { desc = "load session" , remap = false})
+map("n", "<M-l>", function() require("self_session").load() end, { desc = "load session" })
 
 
 map("n", "<M-/>", "gcc", { desc = "comment", remap = true})
@@ -45,10 +41,10 @@ map("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
 map("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
 map("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
 
-map("n", "<leader>a", "<cmd> TmuxNavigateLeft<CR>", { desc = "window left" })
-map("n", "<leader>s", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
-map("n", "<leader>w", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
-map("n", "<leader>d", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
+-- map("n", "<leader>a", "<cmd> TmuxNavigateLeft<CR>", { desc = "window left" })
+-- map("n", "<leader>s", "<cmd> TmuxNavigateDown<CR>", { desc = "window down" })
+-- map("n", "<leader>w", "<cmd> TmuxNavigateUp<CR>", { desc = "window up" })
+-- map("n", "<leader>d", "<cmd> TmuxNavigateRight<CR>", { desc = "window right" })
 
 
 map("i", "<C-a>", "<ESC>^i", { desc = "move beginning of line" })
@@ -61,19 +57,19 @@ map("i", "<C-l>", "<Right>", { desc = "move right" })
 -- │                  Tabufline                   │
 -- ╰──────────────────────────────────────────────╯
 
-map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
-
-map("n", "<M-]>", function()
-    require("nvchad.tabufline").next()
-end, { desc = "buffer goto next" })
-
-map("n", "<M-[>", function()
-    require("nvchad.tabufline").prev()
-end, { desc = "buffer goto prev" })
-
-map("n", "<leader>x", function()
-    require("nvchad.tabufline").close_buffer()
-end, { desc = "buffer close" })
+-- map("n", "<leader>b", "<cmd>enew<CR>", { desc = "buffer new" })
+--
+-- map("n", "<M-]>", function()
+--     require("nvchad.tabufline").next()
+-- end, { desc = "buffer goto next" })
+--
+-- map("n", "<M-[>", function()
+--     require("nvchad.tabufline").prev()
+-- end, { desc = "buffer goto prev" })
+--
+-- map("n", "<leader>x", function()
+--     require("nvchad.tabufline").close_buffer()
+-- end, { desc = "buffer close" })
 
 -- ╭──────────────────────────────────────────────╮
 -- │                  WhichKey                    │
@@ -101,25 +97,25 @@ end, { desc = "whichkey query lookup" })
 --     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 -- end, { desc = "[T]oggle [D]iagnostics" })
 
-map("n", "<M-e>n", function()
-    -- Toggling on always turns relativenumber on
-    if vim.wo.number or vim.wo.relativenumber then
-        vim.wo.number = false
-        vim.wo.relativenumber = false
-    else
-        vim.wo.number = true
-        vim.wo.relativenumber = true
-    end
-end, { desc = "Line number" })
-
-map("n", "<M-e>r", function()
-    -- Only toggle relativenumber if number is on
-    if vim.wo.number then
-        vim.wo.relativenumber = not vim.wo.relativenumber
-    end
-end, { desc = "Relative number" })
-
-map("n", "<M-e>w", function()
+-- map("n", "<M-e>n", function()
+--     -- Toggling on always turns relativenumber on
+--     if vim.wo.number or vim.wo.relativenumber then
+--         vim.wo.number = false
+--         vim.wo.relativenumber = false
+--     else
+--         vim.wo.number = true
+--         vim.wo.relativenumber = true
+--     end
+-- end, { desc = "Line number" })
+--
+-- map("n", "<M-e>r", function()
+--     -- Only toggle relativenumber if number is on
+--     if vim.wo.number then
+--         vim.wo.relativenumber = not vim.wo.relativenumber
+--     end
+-- end, { desc = "Relative number" })
+--
+map("n", "<leader><leader>w", function()
     vim.wo.wrap = not vim.wo.wrap
 end, { desc = "Word wrap" })
 

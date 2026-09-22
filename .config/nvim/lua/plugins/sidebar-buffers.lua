@@ -167,7 +167,14 @@ return {
             end
 
             vim.cmd("wincmd p")
-            vim.cmd("e " .. location.data.filepath)
+            -- Switch by buffer id when we have one -- buffer names like
+            -- "[dap-terminal] Foo#bar()" contain chars (#, %, space) that
+            -- :e would expand. Fall back to an escaped :e for real files.
+            if location.data.buffer and vim.api.nvim_buf_is_valid(location.data.buffer) then
+                vim.api.nvim_set_current_buf(location.data.buffer)
+            else
+                vim.cmd("e " .. vim.fn.fnameescape(location.data.filepath))
+            end
         end,
         ["w"] = function(line)
             local location = loclist:get_location_at(line)

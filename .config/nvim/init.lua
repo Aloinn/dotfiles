@@ -27,5 +27,8 @@ end)
 -- Autocmds
 require("configs.autocmds")
 
+-- Self-managed sessions (buffers + project marks per project root)
+require("self_session").setup()
+
 -- LSP
 require("configs.lsp")
