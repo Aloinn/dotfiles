@@ -5,6 +5,9 @@ return {
     local sidebar = require("sidebar-nvim")
 
     local bookmarks_section = require("plugins.sidebar-bookmarks")
+    -- Forked builtin buffers section with an added buflisted filter
+    -- (hides LSP-diagnostic phantom buffers, keeps session buffers)
+    local buffers_section = require("plugins.sidebar-buffers")
 
     sidebar.setup({
       disable_default_keybindings = 0,
@@ -13,7 +16,7 @@ return {
       initial_width = 35,
       hide_statusline = false,
       update_interval = 1000,
-      sections = { "buffers", bookmarks_section, "git", "diagnostics" },
+      sections = { buffers_section, bookmarks_section, "git", "diagnostics" },
       section_separator = {""},
       section_title_separator = {""},
       containers = {
@@ -22,7 +25,9 @@ return {
       datetime = { format = "%a %b %d, %H:%M", clocks = { { name = "local" } } },
       buffers = {
           show_numbers = false,
-          ignore_not_loaded = true,
+          -- Must be false: session restore (badd) creates buffers as
+          -- listed-but-not-loaded; true would hide them until visited.
+          ignore_not_loaded = false,
           ignore_terminal = true,
       },
       todos = { ignored_paths = { "~" } },
@@ -62,8 +67,8 @@ return {
       end,
     })
 
-    -- Safe buffer delete: patch builtin buffers module directly
-    local builtin_buffers = require("sidebar-nvim.builtin.buffers")
+    -- Safe buffer delete: patch the forked buffers module directly
+    local builtin_buffers = buffers_section
     local orig_d = builtin_buffers.bindings["d"]
     builtin_buffers.bindings["d"] = function(line, col)
       local sidebar_win = vim.api.nvim_get_current_win()

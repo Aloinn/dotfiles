@@ -1,5 +1,5 @@
 local api = vim.api
-local utils = require('jdtls.utils')
+local utils = require('jdtls_custom.utils')
 
 M = {}
 

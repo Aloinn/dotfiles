@@ -1,6 +1,6 @@
 local amazon = require("utils.amazon")
-local jdtls_utils = require('jdtls.utils')
-local jdtls_capabilities = require('jdtls.capabilities')
+local jdtls_utils = require('jdtls_custom.utils')
+local jdtls_capabilities = require('jdtls_custom.capabilities')
 
 local api = vim.api
 
@@ -41,7 +41,21 @@ local platform_config = jdtls_install .. "/libexec/" .. os_config
 
 -- If I ever need any java runtimes or bundles, I'll include them here
 local runtimes = {}
-local bundles = {}
+
+-- Bundles for the test runner / debugger (java-debug + vscode-java-test, unpacked
+-- from their open-vsx VSIX files into ~/dotfiles/java/bundles/). These are Eclipse
+-- plugins loaded INTO jdtls at startup; they add the vscode.java.test.* and
+-- vscode.java.startDebugSession commands used by nvim-jdtls + nvim-dap.
+local bundle_dir = vim.env.HOME .. "/dotfiles/java/bundles"
+local bundles = {
+    vim.fn.glob(bundle_dir .. "/java-debug/extension/server/com.microsoft.java.debug.plugin-*.jar", true),
+}
+for _, jar in ipairs(vim.split(vim.fn.glob(bundle_dir .. "/java-test/extension/server/*.jar", true), "\n")) do
+    -- These two are not OSGi bundles and break jdtls startup if included
+    if jar ~= "" and not jar:match("runner%-jar%-with%-dependencies") and not jar:match("jacocoagent") then
+        table.insert(bundles, jar)
+    end
+end
 
 -- ╭──────────────────────────────────────────────╮
 -- │                   Command                    │
