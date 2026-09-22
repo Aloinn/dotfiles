@@ -32,41 +32,18 @@ return {
         local dapui = require("dapui")
         dapui.setup()
 
-        -- ── TEST MODE (Hydra): single-key testing + debugging ──────────
-        -- Enter with <leader>te (persistent cockpit: run tests, set
-        -- breakpoints, step -- stays active across runs) or automatically
-        -- when a breakpoint hits (auto-exits when that session ends).
-        -- Pink hydra: foreign keys (w, /, gg, arrows...) work normally.
+        -- ── TEST MODE (Hydra): single-key debugging, no leader needed ──
+        -- Pink hydra: heads stay active across presses, foreign keys
+        -- (w, /, gg, arrows...) still work normally without exiting.
         local Hydra = require("hydra")
-        local function run_test(opts)
-            local ok = pcall(function()
-                require("jdtls").test_nearest_method(opts)
-            end)
-            if not ok then
-                vim.notify("Not in a Java test buffer (jdtls not attached)", vim.log.levels.WARN)
-            end
-        end
-        local function run_test_class()
-            local ok = pcall(function()
-                require("jdtls").test_class()
-            end)
-            if not ok then
-                vim.notify("Not in a Java test buffer (jdtls not attached)", vim.log.levels.WARN)
-            end
-        end
-
-        local auto_entered = false
-        local test_hydra
-        test_hydra = Hydra({
+        local test_hydra = Hydra({
             name = "TEST",
             mode = "n",
-            body = "<leader>te",
+            body = "<leader>te", -- manual entry; auto-entered on breakpoint hit
             hint = [[
- Run:    _m_: test method  _c_: test class   _d_: debug method
- Break:  _b_: toggle       _B_: conditional  _x_: clear all
- Step:   _j_: over  _i_: into  _k_: out  _g_: continue (go)
- Insp:   _K_: hover  _r_: repl  _u_: dap-ui
- _X_: terminate session    _q_/_<Esc>_: exit test mode
+ _j_: step over   _i_: step into   _k_: step out   _c_: continue
+ _b_: breakpoint  _B_: conditional _K_: hover      _r_: repl
+ _u_: dap-ui      _R_: rerun test  _x_: terminate  _q_/_<Esc>_: exit
 ]],
             config = {
                 color = "pink",
@@ -75,65 +52,51 @@ return {
                     position = "bottom",
                     float_opts = { border = "rounded" },
                 },
-                -- UI lifecycle is bound to the MODE, not to sessions:
-                -- open on enter, close on exit. Session start/stop and
-                -- test completion never toggle it.
-                on_enter = function()
-                    dapui.open()
-                end,
-                on_exit = function()
-                    auto_entered = false
-                    dapui.close()
-                end,
             },
             heads = {
-                -- run tests
-                { "m", function() run_test() end, { desc = "test method" } },
-                { "c", function() run_test_class() end, { desc = "test class" } },
-                { "d", function()
-                    run_test({ config_overrides = { noDebug = false } })
-                end, { desc = "debug method" } },
-                -- breakpoints
+                { "j", function() dap.step_over() end, { desc = "over" } },
+                { "i", function() dap.step_into() end, { desc = "into" } },
+                { "k", function() dap.step_out() end, { desc = "out" } },
+                { "c", function() dap.continue() end, { desc = "continue" } },
                 { "b", function() dap.toggle_breakpoint() end, { desc = "breakpoint" } },
                 { "B", function()
                     dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
                 end, { desc = "conditional" } },
-                { "x", function() dap.clear_breakpoints() end, { desc = "clear all" } },
-                -- stepping (while paused)
-                { "j", function() dap.step_over() end, { desc = "over" } },
-                { "i", function() dap.step_into() end, { desc = "into" } },
-                { "k", function() dap.step_out() end, { desc = "out" } },
-                { "g", function() dap.continue() end, { desc = "continue" } },
-                -- inspection
                 { "K", function() require("dap.ui.widgets").hover() end, { desc = "hover" } },
                 { "r", function() dap.repl.toggle() end, { desc = "repl" } },
                 { "u", function() dapui.toggle() end, { desc = "dap-ui" } },
-                -- session
-                { "X", function() dap.terminate() end, { desc = "terminate" } },
+                { "R", function()
+                    require("jdtls").test_nearest_method({ config_overrides = { noDebug = false } })
+                end, { desc = "rerun test" } },
+                { "x", function() dap.terminate() end, { desc = "terminate", exit = true } },
                 { "q", nil, { desc = "exit", exit = true, nowait = true } },
                 { "<Esc>", nil, { desc = false, exit = true, nowait = true } },
             },
         })
 
         -- Auto-enter test mode when a breakpoint hits; auto-exit + close
-        -- On breakpoint hit: enter TEST mode if not already in it. Track
-        -- whether WE entered it (auto_entered) vs the user via <leader>te.
-        -- NOTE: no direct dapui calls here -- the UI is driven solely by
-        -- hydra on_enter/on_exit, so sessions never toggle it themselves.
+        -- panels when the session ends (also the crashed-session escape
+        -- hatch, so hijacked keys can never get stranded).
+        -- Open the UI whenever a DEBUG session starts (<leader>td);
+        -- plain test runs (noDebug=true, <leader>tm/tc) stay quiet.
+        dap.listeners.after.event_initialized["jdtls-dapui"] = function(session)
+            if not (session.config and session.config.noDebug) then
+                dapui.open()
+            end
+        end
+        -- On breakpoint hit: make sure UI is up + enter TEST mode (hydra)
         dap.listeners.after.event_stopped["jdtls-dapui"] = function()
+            dapui.open()
             vim.schedule(function()
                 if not test_hydra.layer or not test_hydra.layer.active then
-                    test_hydra:activate() -- on_enter opens the UI
-                    auto_entered = true
+                    test_hydra:activate()
                 end
             end)
         end
         local function on_session_end()
+            dapui.close()
             vim.schedule(function()
-                -- Only auto-exit TEST mode if it was auto-entered by a
-                -- breakpoint (on_exit then closes the UI). Manually-entered
-                -- mode persists -- UI stays up across runs until q/<Esc>.
-                if auto_entered and test_hydra.layer and test_hydra.layer.active then
+                if test_hydra.layer and test_hydra.layer.active then
                     pcall(function() test_hydra:exit() end)
                 end
             end)

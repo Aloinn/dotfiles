@@ -9,6 +9,7 @@
 --   buffers = { { path, row, col }, ... },   -- listed project buffers
 --   active  = "path",                        -- buffer to focus on load
 --   marks   = { a = { path, line, col }, ... },
+--   breakpoints = { { path, line, condition?, log_message?, hit_condition? }, ... },
 -- }
 --
 -- Project root resolution (same as the old persisted.nvim setup):
@@ -21,7 +22,7 @@ local ns = vim.api.nvim_create_namespace("self_session_marks")
 
 local root = nil -- resolved project root (realpath)
 local store_file = nil
-local state = { buffers = {}, active = nil, marks = {} }
+local state = { buffers = {}, active = nil, marks = {}, breakpoints = {} }
 local mark_extmarks = {} -- key -> { buf = bufnr, id = extmark_id }
 local pending_cursor = {} -- path -> { row, col }, applied on BufReadPost
 local save_timer = nil
@@ -178,6 +179,38 @@ local function sync_marks_from_extmarks()
   end
 end
 
+-- DAP breakpoints -> state.breakpoints. Only when nvim-dap is actually
+-- loaded (it lazy-loads on ft=java); otherwise keep whatever was loaded
+-- from the store so a non-java session doesn't wipe saved breakpoints.
+local function collect_breakpoints()
+  if not package.loaded["dap"] then
+    return
+  end
+  local ok, dap_bps = pcall(function()
+    return require("dap.breakpoints").get()
+  end)
+  if not ok then
+    return
+  end
+  local bps = {}
+  for bufnr, bp_list in pairs(dap_bps) do
+    if is_project_buf(bufnr) then
+      local path = realpath(vim.api.nvim_buf_get_name(bufnr))
+      for _, bp in ipairs(bp_list) do
+        table.insert(bps, {
+          path = path,
+          line = bp.line,
+          -- get() returns camelCase; set() takes snake_case. Store snake.
+          condition = bp.condition,
+          log_message = bp.logMessage,
+          hit_condition = bp.hitCondition,
+        })
+      end
+    end
+  end
+  state.breakpoints = bps
+end
+
 local function collect()
   -- Cursor positions: prefer live window cursors
   local win_pos = {}
@@ -215,6 +248,7 @@ local function collect()
   end
 
   sync_marks_from_extmarks()
+  collect_breakpoints()
 end
 
 function M.save()
@@ -224,7 +258,7 @@ function M.save()
   collect()
   -- Don't clobber a previous session with an empty one (e.g. nvim opened
   -- and closed without touching any project file)
-  if #state.buffers == 0 and vim.tbl_isempty(state.marks) then
+  if #state.buffers == 0 and vim.tbl_isempty(state.marks) and #(state.breakpoints or {}) == 0 then
     return
   end
   vim.fn.mkdir(vim.fn.fnamemodify(store_file, ":h"), "p")
@@ -252,6 +286,59 @@ local function schedule_save()
   end))
 end
 
+-- ── Breakpoint restore ──────────────────────────────────────────────────
+
+-- Apply stored breakpoints via nvim-dap. Buffer must be loaded for the
+-- extmark + sign to land.
+local function restore_breakpoints()
+  if #(state.breakpoints or {}) == 0 then
+    return
+  end
+  local ok, dap_bps = pcall(require, "dap.breakpoints")
+  if not ok then
+    return
+  end
+  for _, bp in ipairs(state.breakpoints) do
+    if vim.fn.filereadable(bp.path) == 1 then
+      local buf = vim.fn.bufadd(bp.path)
+      if not vim.api.nvim_buf_is_loaded(buf) then
+        pcall(vim.fn.bufload, buf)
+      end
+      local line = math.min(bp.line, vim.api.nvim_buf_line_count(buf))
+      pcall(dap_bps.set, {
+        condition = bp.condition,
+        log_message = bp.log_message,
+        hit_condition = bp.hit_condition,
+      }, buf, line)
+    end
+  end
+end
+
+-- nvim-dap lazy-loads on ft=java; requiring it here at session load would
+-- force the whole dap/dapui/hydra chain to load at startup. Instead restore
+-- immediately if dap is already loaded, else once lazy.nvim loads it.
+local restored = false
+local function restore_breakpoints_when_ready()
+  if restored then
+    return
+  end
+  if package.loaded["dap"] then
+    restored = true
+    restore_breakpoints()
+    return
+  end
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "LazyLoad",
+    callback = function(ev)
+      if ev.data == "nvim-dap" and not restored then
+        restored = true
+        -- schedule: let dap finish its own setup first
+        vim.schedule(restore_breakpoints)
+      end
+    end,
+  })
+end
+
 -- ── Load ────────────────────────────────────────────────────────────────
 
 function M.load()
@@ -272,6 +359,7 @@ function M.load()
   state.buffers = decoded.buffers or {}
   state.active = decoded.active
   state.marks = decoded.marks or {}
+  state.breakpoints = decoded.breakpoints or {}
   -- vim.json decodes {} as empty list; normalize
   if vim.islist(state.marks) then
     state.marks = {}
@@ -328,6 +416,8 @@ function M.load()
   for key in pairs(state.marks) do
     place_sign(key)
   end
+
+  restore_breakpoints_when_ready()
 
   refresh_sidebar()
   return true

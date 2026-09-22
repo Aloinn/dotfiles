@@ -64,12 +64,11 @@ end
 local cmd = {
     jdtls_bin,
 
-    "-XX:+UseParallelGC", -- Better performance for multi-core systems
-    "-XX:GCTimeRatio=4", -- Spend less time on GC
-    "-XX:AdaptiveSizePolicyWeight=90", -- Optimize for throughput
+    "-XX:+UseG1GC", -- Pause-time-oriented GC, better for large interactive heaps
+    "-XX:MaxGCPauseMillis=200", -- Target max GC pause
     "-Dsun.zip.disableMemoryMapping=true", -- Reduce memory pressure
-    "-Xms1g", -- Initial heap size
-    "-Xmx8g", -- Maximum heap size
+    "-Xms4g", -- Initial heap size
+    "-Xmx32g", -- Maximum heap size
     "-XX:+UseStringDeduplication", -- Reduce memory usage for string storage
     "-XX:+OptimizeStringConcat", -- Optimize string concatenation
     "-Declipse.application=org.eclipse.jdt.ls.core.id1",

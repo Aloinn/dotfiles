@@ -15,6 +15,10 @@ return {
     -- Forked git section: fixes races that transiently blanked the section
     -- (per-cycle results + vim.system + generation counter)
     local git_section = require("plugins.sidebar-git")
+    -- Forked builtin diagnostics section: current-buffer only + debounced
+    -- (builtin deep-copies ALL buffers' diagnostics on every DiagnosticChanged
+    -- -- caused multi-second freezes after JUnit runs)
+    local diagnostics_section = require("plugins.sidebar-diagnostics")
 
     -- "▶" sign beside every @Test method in java buffers
     require("utils.java_tests").setup()
@@ -26,7 +30,7 @@ return {
       initial_width = 35,
       hide_statusline = false,
       update_interval = 1000,
-      sections = { buffers_section, bookmarks_section, git_section, "diagnostics", tests_section },
+      sections = { buffers_section, bookmarks_section, git_section, diagnostics_section, tests_section },
       section_separator = {""},
       section_title_separator = {""},
       containers = {
