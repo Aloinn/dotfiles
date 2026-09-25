@@ -5,6 +5,14 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# --- Host detection: cloud desktop vs local (mac) ---
+# Cloud desktops are named dev-dsk-<user>-...; gate heavy/cloud-only setup on this.
+if [[ "$(hostname)" == dev-dsk-* ]]; then
+  IS_CLOUD_DESKTOP=true
+else
+  IS_CLOUD_DESKTOP=false
+fi
+
 export BRAZIL_WORKSPACE_DEFAULT_LAYOUT=short
 
 export AUTO_TITLE_SCREENS="NO"
@@ -28,10 +36,12 @@ ssh() {
     set-title $HOST;
 }
 
-## Envs
-for f in /apollo/env/*/bin; do
-    [[ -d "$f" ]] && export PATH="$PATH:$f"
-done
+## Envs (cloud desktop only — /apollo doesn't exist on mac, and globbing it is slow)
+if $IS_CLOUD_DESKTOP; then
+  for f in /apollo/env/*/bin; do
+      [[ -d "$f" ]] && export PATH="$PATH:$f"
+  done
+fi
 
 ## Builders
 alias e=emacs
@@ -52,7 +62,10 @@ alias bbra='bbr apollo-pkg'
 export PATH=$HOME/.toolbox/bin:$PATH
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 export FZF_BASE=/path/to/fzf/install/dir
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+# linuxbrew — cloud desktop only (heavy eval; path doesn't exist on mac)
+if $IS_CLOUD_DESKTOP; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+fi
 
 ## zsh
 #
@@ -70,8 +83,42 @@ export PATH=$HOME/.local/bin/scripts:$PATH
 export KITTY_SHELL_INTEGRATION=enabled
 export KITTY_LISTEN_ON=ssh
 
-# GetPackage
+# GetPackage - auto-resolves version set from master VS (assumes -1.0 major version)
 get_package () {
+  local pkg="${1}"
+  local base_dir="${2:-$HOME/code}"
+  local mv="${pkg}-1.0"
+
+  # Resolve master version set (try 'live' VS first, then first consuming VS)
+  local master_vs first_vs
+  master_vs=$(brazil package print --package "${pkg}" --majorVersion "1.0" --versionSet live 2>&1 \
+    | grep 'master vs:' | sed 's/.*master vs: //; s/ |.*//')
+
+  if [[ -z "${master_vs}" ]]; then
+    # Package not in live — grab first consuming VS and query master from there
+    first_vs=$(brazil package listversionsets -mv "${mv}" --versionSetLimit 1 2>&1 | grep '/' | head -1)
+    if [[ -n "${first_vs}" ]]; then
+      master_vs=$(brazil package print --package "${pkg}" --majorVersion "1.0" --versionSet "${first_vs}" 2>&1 \
+        | grep 'master vs:' | sed 's/.*master vs: //; s/ |.*//')
+    fi
+  fi
+
+  if [[ -z "${master_vs}" ]]; then
+    echo "⚠ Could not resolve master VS for ${mv}, trying ${pkg}/development..."
+    master_vs="${pkg}/development"
+  fi
+
+  echo "📦 ${pkg} → VS: ${master_vs}"
+
+  cd "${base_dir}" \
+    && brazil ws create --name "${pkg}" --versionSet "${master_vs}" \
+    && cd "${pkg}" \
+    && brazil ws use -p "${pkg}"
+}
+refactor () {
+  get_package "${1}" "$HOME/refactor"
+}
+get_package2 () {
   cd ~/code && brazil ws create --name ${1} && cd ${1} && brazil ws use -p ${1}
 }
 autoload -Uz compinit && compinit
@@ -91,8 +138,10 @@ export PATH="/local/home/alainlam/.aim/mcp-servers:$PATH"
 export PATH="/home/alainlam/code/MeshClaw/src/MeshClaw/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if $IS_CLOUD_DESKTOP; then
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm (SLOW — cloud desktop only)
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
 
 # TMUX
 alias tmls="tmux list-session"
@@ -113,12 +162,16 @@ export LC_ALL=en_US.UTF-8
 export EDITOR='nvim'
 export VISUAL='nvim'
 
-export PATH=$HOME/.rbenv/bin:$PATH
-eval "$(rbenv init -)"
+if $IS_CLOUD_DESKTOP; then
+  export PATH=$HOME/.rbenv/bin:$PATH
+  eval "$(rbenv init -)"
+fi
 
-## DdbStorageApiOncallTools
-source /apollo/env/DdbStorageApiOncallTools/lib/sim.sh
-source /apollo/env/DdbStorageApiOncallTools/lib/checkhelp.sh
+## DdbStorageApiOncallTools (cloud desktop only — /apollo paths)
+if $IS_CLOUD_DESKTOP; then
+  source /apollo/env/DdbStorageApiOncallTools/lib/sim.sh
+  source /apollo/env/DdbStorageApiOncallTools/lib/checkhelp.sh
+fi
 ## KVPC
  function ssh2hc-kvpc() {
       hostclass=$1
@@ -168,3 +221,126 @@ tmux-smart-attach() {
 }
 
 bindkey -s "6;9u" '^Utmux-smart-attach^M'
+unset GEM_HOME GEM_PATH RUBYOPT RUBYLIB
+
+# GTAS RELATED
+
+gtas() {
+  cd /home/alainlam/code/BigBirdGTAdminService/src/BigBirdGTAdminService;
+  GTACCOUNT=857771923872
+  wf_creds=$(ada credentials print --account $GTACCOUNT --role Admin)
+  wf_access_key=$(echo "$wf_creds" | jq -rc ."AccessKeyId")
+  wf_secret_key=$(echo "$wf_creds" | jq -rc ."SecretAccessKey")
+  wf_session_token=$(echo "$wf_creds" | jq -rc ."SessionToken")
+
+  gtas_creds=$(ada credentials print --account 601134390254 --role GTASLocalServer)
+  gtas_access_key=$(echo "$gtas_creds" | jq -rc ."AccessKeyId")
+  gtas_secret_key=$(echo "$gtas_creds" | jq -rc ."SecretAccessKey")
+  gtas_session_token=$(echo "$gtas_creds" | jq -rc ."SessionToken")
+
+  export workflowAwsAccessKeyId=$wf_access_key
+  export workflowAwsSecretAccessKey=$wf_secret_key
+  export workflowAwsSessionToken=$wf_session_token
+
+  export AWS_ACCESS_KEY_ID=$gtas_access_key
+  export AWS_SECRET_ACCESS_KEY=$gtas_secret_key
+  export AWS_SESSION_TOKEN=$gtas_session_token
+
+  brazil-build server
+}
+
+# --- Worktree server launchers (GTAS/GMDS, IAD/DUB) ---
+# Port map (JDWP / HTTP / HTTPS):
+#   gtas_iad: 5051 / 8800 / 8801   (target: server)
+#   gtas_dub: 5052 / 8880 / 8881   (target: server-dub)
+#   gmds_iad: 5061 / 8000 / 8001   (target: server)
+#   gmds_dub: 5062 / 8900 / 8901   (target: server-dub)
+
+# Kill anything listening on the given TCP ports
+_kill_ports() {
+  local port pids
+  for port in "$@"; do
+    pids=$(lsof -ti tcp:"$port" 2>/dev/null)
+    if [ -n "$pids" ]; then
+      echo "killing listeners on :$port -> ${pids//$'\n'/ }"
+      kill ${=pids} 2>/dev/null
+      sleep 1
+      pids=$(lsof -ti tcp:"$port" 2>/dev/null)
+      [ -n "$pids" ] && kill -9 ${=pids} 2>/dev/null
+    fi
+  done
+}
+
+# GTAS creds: workflow account + GTASLocalServer (same as gtas())
+_gtas_env() {
+  local wf_creds gtas_creds
+  wf_creds=$(ada credentials print --account 857771923872 --role Admin) || return 1
+  export workflowAwsAccessKeyId=$(echo "$wf_creds" | jq -rc .AccessKeyId)
+  export workflowAwsSecretAccessKey=$(echo "$wf_creds" | jq -rc .SecretAccessKey)
+  export workflowAwsSessionToken=$(echo "$wf_creds" | jq -rc .SessionToken)
+
+  gtas_creds=$(ada credentials print --account 601134390254 --role GTASLocalServer) || return 1
+  export AWS_ACCESS_KEY_ID=$(echo "$gtas_creds" | jq -rc .AccessKeyId)
+  export AWS_SECRET_ACCESS_KEY=$(echo "$gtas_creds" | jq -rc .SecretAccessKey)
+  export AWS_SESSION_TOKEN=$(echo "$gtas_creds" | jq -rc .SessionToken)
+}
+
+# GMDS creds: GTMD test account (per GMDS README)
+_gmds_env() {
+  local gmds_creds
+  gmds_creds=$(ada credentials print --account 857771923872 --role Admin) || return 1
+  export AWS_ACCESS_KEY_ID=$(echo "$gmds_creds" | jq -rc .AccessKeyId)
+  export AWS_SECRET_ACCESS_KEY=$(echo "$gmds_creds" | jq -rc .SecretAccessKey)
+  export AWS_SESSION_TOKEN=$(echo "$gmds_creds" | jq -rc .SessionToken)
+}
+
+# GTAS DUB creds: GTASLocalServer in the eu-west-1 test account 210665712600
+# (per GTAS README: DUB server needs base creds from the DUB account so the
+# fleetWideStsCacheAccess assume-role works, plus Dub-suffixed workflow vars)
+_gtas_dub_env() {
+  local wf_creds dub_creds
+  wf_creds=$(ada credentials print --account 857771923872 --role Admin) || return 1
+
+  export workflowAwsAccessKeyIdDub=$(echo "$wf_creds" | jq -rc .AccessKeyId)
+  export workflowAwsSecretAccessKeyDub=$(echo "$wf_creds" | jq -rc .SecretAccessKey)
+  export workflowAwsSessionTokenDub=$(echo "$wf_creds" | jq -rc .SessionToken)
+
+  dub_creds=$(ada credentials print --account 210665712600 --role GTASLocalServer) || return 1
+  export AWS_ACCESS_KEY_ID=$(echo "$dub_creds" | jq -rc .AccessKeyId)
+  export AWS_SECRET_ACCESS_KEY=$(echo "$dub_creds" | jq -rc .SecretAccessKey)
+  export AWS_SESSION_TOKEN=$(echo "$dub_creds" | jq -rc .SessionToken)
+
+}
+
+gtas_iad() {
+  _kill_ports 5051 8800 8801
+  cd /local/home/alainlam/code/BigBirdGTAdminService/worktrees/iad/src/BigBirdGTAdminService || return
+  _gtas_env || return
+  brazil-build server
+}
+
+gtas_dub() {
+  _kill_ports 5052 8880 8881
+  cd /local/home/alainlam/code/BigBirdGTAdminService/worktrees/dub/src/BigBirdGTAdminService || return
+  _gtas_dub_env || return
+  brazil-build server-dub
+}
+
+gmds_iad() {
+  _kill_ports 5061 8000 8001
+  cd /local/home/alainlam/code/BigBirdGlobalMetadataService/worktrees/iad/src/BigBirdGlobalMetadataService || return
+  _gmds_env || return
+  brazil-build server
+}
+
+gmds_dub() {
+  _kill_ports 5062 8900 8901
+  cd /local/home/alainlam/code/BigBirdGlobalMetadataService/worktrees/dub/src/BigBirdGlobalMetadataService || return
+  _gmds_env || return
+  brazil-build server-dub
+}
+
+edit() {
+  cd ~/dotfiles/.config
+  nvim
+}
