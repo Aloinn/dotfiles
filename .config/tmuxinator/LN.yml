@@ -1,3 +1,0 @@
-name: LN
-root: ~/code/DdbLogNode/src/DdbLogNode/
-<%= File.read(File.expand_path("~/.config/tmuxinator/_code_layout.yml")) %>

@@ -1,0 +1,17 @@
+# `tmuxinator start "[Script] GTAS + GMDS"` -> tmux session "[TM] gt_servers" (name field)
+name: "[TM] gt_servers"
+
+windows:
+  - servers:
+      layout: tiled
+      panes:
+        - gtas_iad
+        - gtas_dub
+        - gmds_iad
+        - gmds_dub
+  - ddv:
+      layout: even-horizontal
+      panes:
+        - ada credentials update --account 857771923872 --role Admin --provider isengard --profile gtas-workflows --once && ddv -p gtas-workflows -r us-east-1
+        # - ada credentials update --account 857771923872 --role Admin --provider isengard --profile gtas-workflows --once && ddv -p gtas-workflows -r eu-west-1
+        - ada credentials update --account 977940144957 --role Admin --provider isengard --profile gmds-metadata --once && ddv -p gmds-metadata -r us-east-1

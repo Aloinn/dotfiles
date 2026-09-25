@@ -1,0 +1,9 @@
+name: "[TM] replicator"
+root: ~/code/DdbReplicator/src/DdbReplicator
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - nvim
+  - shell:

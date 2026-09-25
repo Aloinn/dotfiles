@@ -1,0 +1,9 @@
+name: "[TM] dotfiles"
+root: ~/dotfiles
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - nvim
+  - shell:

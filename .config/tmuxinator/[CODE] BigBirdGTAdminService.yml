@@ -1,0 +1,9 @@
+name: "[TM] gtas"
+root: ~/code/BigBirdGTAdminService/src/BigBirdGTAdminService
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - nvim
+  - shell:

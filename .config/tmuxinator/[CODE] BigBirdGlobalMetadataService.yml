@@ -1,0 +1,9 @@
+name: "[TM] gmds"
+root: ~/code/BigBirdGlobalMetadataService/src/BigBirdGlobalMetadataService
+
+windows:
+  - editor:
+      layout: main-horizontal
+      panes:
+        - nvim
+  - shell:
