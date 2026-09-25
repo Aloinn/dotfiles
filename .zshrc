@@ -344,3 +344,6 @@ edit() {
   cd ~/dotfiles/.config
   nvim
 }
+alias c3="kitten ssh -t -o SendEnv=TERM dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com 'tmux attach -t start || tmux new -s start'"
+alias c2="kitten ssh dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com"
+alias c="ssh dev-dsk-alainlam-2c-cfa72de5.us-west-2.amazon.com"
