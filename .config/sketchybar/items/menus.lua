@@ -48,32 +48,24 @@ local function update_menus(env)
     sbar.set('/menu\\..*/', { drawing = false })
     menu_padding:set({ drawing = true })
 
-    -- Left-stack x cursor: fixed items (apple + slack + pads) sit before
-    -- the menus. Track estimated x so the first menu item that would
-    -- slide under the notch gets padded past it instead.
-    local x = notch.left_fixed_width
+    local entries = {}
     local id = 1
-    local wrapped = false
     for menu in string.gmatch(menus, '[^\r\n]+') do
       if id < max_items then
-        local w = notch.estimate_text_width(menu, id == 1)
-        local jump = notch.jump(x, w)
-        if jump > 0 then wrapped = true end
-        menu_items[id]:set({
-          label = menu,
-          drawing = true,
-          padding_left = settings.paddings + jump,
-        })
-        x = x + w + jump + 2 * settings.paddings
+        menu_items[id]:set({ label = menu, drawing = true })
+        entries[#entries + 1] = { item = menu_items[id], base = settings.paddings }
       else break end
       id = id + 1
     end
 
-    -- A solid bracket would paint a band across the notch gap; drop it
-    -- whenever the menu row wraps around the notch.
-    menu_bracket:set({
-      background = { color = wrapped and colors.transparent or colors.bg1 }
-    })
+    -- Wrap the row around the notch using real rendered geometry.
+    -- A solid bracket would paint a band across the notch gap, so drop
+    -- it whenever a wrap is applied.
+    notch.wrap(entries, function(wrapped)
+      menu_bracket:set({
+        background = { color = wrapped and colors.transparent or colors.bg1 }
+      })
+    end)
   end)
 end
 
