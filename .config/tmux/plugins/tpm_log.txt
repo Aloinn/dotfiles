@@ -2200,3 +2200,123 @@
 [2026-09-10 19:48:59.916]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
 [2026-09-10 19:49:00.004]	Done.
 
+[2026-09-22 21:27:22.580]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:27:22.591]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:27:22.628]	Already installed "tmux.expose"
+[2026-09-22 21:27:22.638]	Already installed "tmux-thumbs"
+[2026-09-22 21:27:22.649]	Already installed "tmux-resurrect"
+[2026-09-22 21:27:22.659]	Already installed "tmux-continuum"
+[2026-09-22 21:27:22.670]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:27:22.692]	Updating all plugins!
+[2026-09-22 21:27:22.703]	
+[2026-09-22 21:27:23.035]	  "tmux-resurrect" update success
+[2026-09-22 21:27:23.046]	    | Already up to date.
+[2026-09-22 21:27:23.056]	  "tmux.expose" update success
+[2026-09-22 21:27:23.067]	    | Already up to date.
+[2026-09-22 21:27:23.077]	  "tmux-continuum" update success
+[2026-09-22 21:27:23.087]	    | Already up to date.
+[2026-09-22 21:27:23.098]	  "tmux-thumbs" update success
+[2026-09-22 21:27:23.108]	    | Already up to date.
+[2026-09-22 21:27:23.119]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:27:23.215]	Done.
+
+[2026-09-22 21:30:36.979]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:30:36.990]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:30:37.027]	Already installed "tmux.expose"
+[2026-09-22 21:30:37.038]	Already installed "tmux-thumbs"
+[2026-09-22 21:30:37.048]	Already installed "tmux-resurrect"
+[2026-09-22 21:30:37.059]	Already installed "tmux-continuum"
+[2026-09-22 21:30:37.069]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:30:37.092]	Updating all plugins!
+[2026-09-22 21:30:37.103]	
+[2026-09-22 21:30:37.450]	  "tmux-resurrect" update success
+[2026-09-22 21:30:37.460]	  "tmux-continuum" update success
+[2026-09-22 21:30:37.470]	    | Already up to date.
+[2026-09-22 21:30:37.481]	    | Already up to date.
+[2026-09-22 21:30:37.491]	  "tmux.expose" update success
+[2026-09-22 21:30:37.502]	    | Already up to date.
+[2026-09-22 21:30:37.512]	  "tmux-thumbs" update success
+[2026-09-22 21:30:37.522]	    | Already up to date.
+[2026-09-22 21:30:37.533]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:30:37.627]	Done.
+
+[2026-09-22 21:31:32.664]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:31:32.675]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:31:32.711]	Already installed "tmux.expose"
+[2026-09-22 21:31:32.722]	Already installed "tmux-thumbs"
+[2026-09-22 21:31:32.732]	Already installed "tmux-resurrect"
+[2026-09-22 21:31:32.742]	Already installed "tmux-continuum"
+[2026-09-22 21:31:32.753]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:31:32.775]	Updating all plugins!
+[2026-09-22 21:31:32.786]	
+[2026-09-22 21:31:33.132]	  "tmux.expose" update success
+[2026-09-22 21:31:33.142]	    | Already up to date.
+[2026-09-22 21:31:33.153]	  "tmux-continuum" update success
+[2026-09-22 21:31:33.163]	    | Already up to date.
+[2026-09-22 21:31:33.173]	  "tmux-resurrect" update success
+[2026-09-22 21:31:33.184]	    | Already up to date.
+[2026-09-22 21:31:33.399]	  "tmux-thumbs" update success
+[2026-09-22 21:31:33.409]	    | Already up to date.
+[2026-09-22 21:31:33.420]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:31:33.516]	Done.
+
+[2026-09-22 21:34:42.530]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:34:42.541]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:34:42.580]	Already installed "tmux.expose"
+[2026-09-22 21:34:42.591]	Already installed "tmux-thumbs"
+[2026-09-22 21:34:42.601]	Already installed "tmux-resurrect"
+[2026-09-22 21:34:42.611]	Already installed "tmux-continuum"
+[2026-09-22 21:34:42.622]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:34:42.644]	Updating all plugins!
+[2026-09-22 21:34:42.655]	
+[2026-09-22 21:34:43.008]	  "tmux-thumbs" update success
+[2026-09-22 21:34:43.019]	    | Already up to date.
+[2026-09-22 21:34:43.029]	  "tmux-resurrect" update success
+[2026-09-22 21:34:43.040]	    | Already up to date.
+[2026-09-22 21:34:43.050]	  "tmux.expose" update success
+[2026-09-22 21:34:43.060]	    | Already up to date.
+[2026-09-22 21:34:43.071]	  "tmux-continuum" update success
+[2026-09-22 21:34:43.081]	    | Already up to date.
+[2026-09-22 21:34:43.092]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:34:43.187]	Done.
+
+[2026-09-22 21:34:49.272]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:34:49.283]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:34:49.320]	Already installed "tmux.expose"
+[2026-09-22 21:34:49.330]	Already installed "tmux-thumbs"
+[2026-09-22 21:34:49.341]	Already installed "tmux-resurrect"
+[2026-09-22 21:34:49.351]	Already installed "tmux-continuum"
+[2026-09-22 21:34:49.362]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:34:49.385]	Updating all plugins!
+[2026-09-22 21:34:49.395]	
+[2026-09-22 21:34:49.754]	  "tmux-resurrect" update success
+[2026-09-22 21:34:49.765]	    | Already up to date.
+[2026-09-22 21:34:49.776]	  "tmux.expose" update success
+[2026-09-22 21:34:49.786]	    | Already up to date.
+[2026-09-22 21:34:49.796]	  "tmux-thumbs" update success
+[2026-09-22 21:34:49.807]	    | Already up to date.
+[2026-09-22 21:34:49.817]	  "tmux-continuum" update success
+[2026-09-22 21:34:49.827]	    | Already up to date.
+[2026-09-22 21:34:49.838]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:34:49.932]	Done.
+
+[2026-09-22 21:53:15.845]	List of discovered tpm plugins: cesarferreira/tmux.expose fcsonline/tmux-thumbs tmux-plugins/tmux-resurrect tmux-plugins/tmux-continuum
+[2026-09-22 21:53:15.856]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/install_plugins
+[2026-09-22 21:53:15.893]	Already installed "tmux.expose"
+[2026-09-22 21:53:15.904]	Already installed "tmux-thumbs"
+[2026-09-22 21:53:15.914]	Already installed "tmux-resurrect"
+[2026-09-22 21:53:15.924]	Already installed "tmux-continuum"
+[2026-09-22 21:53:15.935]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/update_plugins all
+[2026-09-22 21:53:15.958]	Updating all plugins!
+[2026-09-22 21:53:15.968]	
+[2026-09-22 21:53:16.316]	  "tmux-thumbs" update success
+[2026-09-22 21:53:16.326]	    | Already up to date.
+[2026-09-22 21:53:16.337]	  "tmux.expose" update success
+[2026-09-22 21:53:16.347]	    | Already up to date.
+[2026-09-22 21:53:16.358]	  "tmux-resurrect" update success
+[2026-09-22 21:53:16.368]	    | Already up to date.
+[2026-09-22 21:53:16.379]	  "tmux-continuum" update success
+[2026-09-22 21:53:16.389]	    | Already up to date.
+[2026-09-22 21:53:16.400]	Invoking /home/alainlam/.config/tmux/plugins/tpm/bin/clean_plugins all
+[2026-09-22 21:53:16.496]	Done.
+

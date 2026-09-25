@@ -71,7 +71,7 @@ tmux_conf_new_pane_reconnect_ssh=false
 # see https://github.com/termstandard/colors
 tmux_conf_24b_colour=auto
 set -g mouse on
-set -g set-clipboard external
+set -g set-clipboard on #!important -- 'external' ignores OSC 52 from apps inside panes (posting, ddv)
 set -g allow-passthrough on
 
 # -- theming -------------------------------------------------------------------
@@ -505,10 +505,11 @@ bind g display-popup \
   -E "/home/linuxbrew/.linuxbrew/bin/lazygit"
 
 unbind p
+# Script picker: prefix+p lists ~/scripts in fzf and runs the selected one
 bind p display-popup \
-  -w 80% \
-  -h 80% \
-  "tmux new-session -A -s popup "
+  -w 60% \
+  -h 60% \
+  -E "/home/alainlam/scripts/tmux-script-picker.sh"
 
 # Select last command input+output by prompt pattern matching (works on local + remote)
 # xsel uninstalled from linuxbrew so gpakosz framework's if-b check fails and y is ours
@@ -568,6 +569,11 @@ unbind q
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @continuum-restore 'on'
+
+# Tmuxinator project picker: prefix+l opens fzf popup to start/attach a project
+# (overrides default select-pane -R; use C-Right or arrow keys for pane nav)
+unbind l
+bind l display-popup -w 50% -h 50% -E '/home/alainlam/scripts/tmux-tmuxinator-picker.sh'
 
 ## Prompt jumping: prefix+Up/Down jump between shell prompts in scrollback.
 ## Matches local p10k prompt (Powerline '' glyph) or remote 'host% ' prompts.
