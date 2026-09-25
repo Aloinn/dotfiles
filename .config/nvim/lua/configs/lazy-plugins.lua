@@ -17,6 +17,7 @@ require("lazy").setup({
     require("plugins.vuffer"),
     require("plugins.neotest"),
     require("plugins.jdtls-test"),
+    require("plugins.session-hydra"),
     require("plugins.smartpaste"),
     require("plugins.diff"),
     -- require("plugins.minimap"),

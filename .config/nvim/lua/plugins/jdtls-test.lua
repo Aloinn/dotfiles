@@ -64,9 +64,9 @@ return {
             hint = [[
  Run:    _m_: test method  _c_: test class   _d_: debug method
  Break:  _b_: toggle       _B_: conditional  _x_: clear all
- Step:   _j_: over  _i_: into  _k_: out  _g_: continue (go)
- Insp:   _K_: hover  _r_: repl  _u_: dap-ui
- _X_: terminate session    _q_/_<Esc>_: exit test mode
+ Step:   _]_: over  _}_: into  _[_: out  _g_: continue (go)
+ Insp:   _?_: hover  _r_: repl  _u_: dap-ui
+ _X_: terminate session    <leader>te: exit test mode
 ]],
             config = {
                 color = "pink",
@@ -100,18 +100,16 @@ return {
                 end, { desc = "conditional" } },
                 { "x", function() dap.clear_breakpoints() end, { desc = "clear all" } },
                 -- stepping (while paused)
-                { "j", function() dap.step_over() end, { desc = "over" } },
-                { "i", function() dap.step_into() end, { desc = "into" } },
-                { "k", function() dap.step_out() end, { desc = "out" } },
+                { "]", function() dap.step_over() end, { desc = "over" } },
+                { "}", function() dap.step_into() end, { desc = "into" } },
+                { "[", function() dap.step_out() end, { desc = "out" } },
                 { "g", function() dap.continue() end, { desc = "continue" } },
                 -- inspection
-                { "K", function() require("dap.ui.widgets").hover() end, { desc = "hover" } },
+                { "?", function() require("dap.ui.widgets").hover() end, { desc = "hover" } },
                 { "r", function() dap.repl.toggle() end, { desc = "repl" } },
                 { "u", function() dapui.toggle() end, { desc = "dap-ui" } },
                 -- session
                 { "X", function() dap.terminate() end, { desc = "terminate" } },
-                { "q", nil, { desc = "exit", exit = true, nowait = true } },
-                { "<Esc>", nil, { desc = false, exit = true, nowait = true } },
             },
         })
 
@@ -132,7 +130,7 @@ return {
             vim.schedule(function()
                 -- Only auto-exit TEST mode if it was auto-entered by a
                 -- breakpoint (on_exit then closes the UI). Manually-entered
-                -- mode persists -- UI stays up across runs until q/<Esc>.
+                -- mode persists -- UI stays up across runs until <leader>te.
                 if auto_entered and test_hydra.layer and test_hydra.layer.active then
                     pcall(function() test_hydra:exit() end)
                 end
@@ -177,7 +175,47 @@ return {
 
                 -- Registers the `java` dap adapter + main-class launch configs
                 require("jdtls").setup_dap({ hotcodereplace = "auto" })
-                require("jdtls.dap").setup_dap_main_class_configs()
+                -- Remote-attach configs for locally running coral servers
+                -- (bb server starts JDWP: GTAS IAD=5051, GTAS DUB=5052,
+                --  GMDS IAD=5061, GMDS DUB=5062 -- see each build.xml jvmarg).
+                -- Added in on_ready because setup_dap_main_class_configs replaces
+                -- dap.configurations.java when its async main-class scan completes.
+                require("jdtls.dap").setup_dap_main_class_configs({
+                    on_ready = function()
+                        local dap_configs = require("dap").configurations
+                        dap_configs.java = dap_configs.java or {}
+                        vim.list_extend(dap_configs.java, {
+                            {
+                                type = "java",
+                                request = "attach",
+                                name = "Attach: GTAS IAD (:5051)",
+                                hostName = "localhost",
+                                port = 5051,
+                            },
+                            {
+                                type = "java",
+                                request = "attach",
+                                name = "Attach: GTAS DUB (:5052)",
+                                hostName = "localhost",
+                                port = 5052,
+                            },
+                            {
+                                type = "java",
+                                request = "attach",
+                                name = "Attach: GMDS IAD (:5061)",
+                                hostName = "localhost",
+                                port = 5061,
+                            },
+                            {
+                                type = "java",
+                                request = "attach",
+                                name = "Attach: GMDS DUB (:5062)",
+                                hostName = "localhost",
+                                port = 5062,
+                            },
+                        })
+                    end,
+                })
 
                 local opts = { buffer = args.buf, noremap = true, silent = true }
                 vim.keymap.set("n", "<leader>tm", function()

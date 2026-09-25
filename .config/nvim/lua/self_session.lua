@@ -4,7 +4,9 @@
 --
 -- Replaces persisted.nvim (mksession) and marks.nvim.
 --
--- Store: stdpath("data")/self-sessions/<escaped-project-root>.json
+-- Store: stdpath("data")/self-sessions/<escaped-project-root>/<session>.json
+-- (multiple named sessions per project root; ".active" file records the
+--  last-active session name; legacy flat <root>.json migrates to default.json)
 -- {
 --   buffers = { { path, row, col }, ... },   -- listed project buffers
 --   active  = "path",                        -- buffer to focus on load
@@ -21,7 +23,9 @@ local M = {}
 local ns = vim.api.nvim_create_namespace("self_session_marks")
 
 local root = nil -- resolved project root (realpath)
-local store_file = nil
+local store_dir = nil -- per-root session directory
+local session_name = "default" -- active session within the root
+local store_file = nil -- store_dir/<session_name>.json
 local state = { buffers = {}, active = nil, marks = {}, breakpoints = {} }
 local mark_extmarks = {} -- key -> { buf = bufnr, id = extmark_id }
 local pending_cursor = {} -- path -> { row, col }, applied on BufReadPost
@@ -43,16 +47,46 @@ local function project_root(dir)
   return dir
 end
 
+local function valid_session_name(name)
+  return type(name) == "string" and name:match("^[%w._-]+$") ~= nil
+end
+
 local function resolve_root()
   local real_cwd = vim.uv.fs_realpath(vim.fn.getcwd()) or vim.fn.getcwd()
   root = project_root(real_cwd)
   if root ~= vim.fn.getcwd() then
     vim.cmd.cd(root)
   end
-  store_file = vim.fn.stdpath("data")
+  local prefix = vim.fn.stdpath("data")
     .. "/self-sessions/"
     .. root:gsub("[/\\:]", "%%")
-    .. ".json"
+  store_dir = prefix
+  -- Migrate pre-multi-session flat store: <prefix>.json -> <prefix>/default.json
+  local legacy = prefix .. ".json"
+  if vim.fn.isdirectory(store_dir) == 0 then
+    vim.fn.mkdir(store_dir, "p")
+    if vim.fn.filereadable(legacy) == 1 then
+      os.rename(legacy, store_dir .. "/default.json")
+    end
+  end
+  -- Resume the last-active session for this root
+  local fd = io.open(store_dir .. "/.active", "r")
+  if fd then
+    local name = (fd:read("*l") or ""):gsub("%s+$", "")
+    fd:close()
+    if valid_session_name(name) then
+      session_name = name
+    end
+  end
+  store_file = store_dir .. "/" .. session_name .. ".json"
+end
+
+local function write_active()
+  local fd = io.open(store_dir .. "/.active", "w")
+  if fd then
+    fd:write(session_name .. "\n")
+    fd:close()
+  end
 end
 
 -- ── Helpers ─────────────────────────────────────────────────────────────
@@ -251,14 +285,17 @@ local function collect()
   collect_breakpoints()
 end
 
-function M.save()
+-- force == true skips the empty-state guard (used by new_session so a
+-- freshly named session gets a store file even before anything is open).
+-- Strict `== true` check: autocmds/user-commands pass tables as arg 1.
+function M.save(force)
   if not root then
     return
   end
   collect()
   -- Don't clobber a previous session with an empty one (e.g. nvim opened
   -- and closed without touching any project file)
-  if #state.buffers == 0 and vim.tbl_isempty(state.marks) and #(state.breakpoints or {}) == 0 then
+  if force ~= true and #state.buffers == 0 and vim.tbl_isempty(state.marks) and #(state.breakpoints or {}) == 0 then
     return
   end
   vim.fn.mkdir(vim.fn.fnamemodify(store_file, ":h"), "p")
@@ -317,26 +354,29 @@ end
 -- nvim-dap lazy-loads on ft=java; requiring it here at session load would
 -- force the whole dap/dapui/hydra chain to load at startup. Instead restore
 -- immediately if dap is already loaded, else once lazy.nvim loads it.
-local restored = false
+-- Pending flag (not a once-flag) so session switches re-arm the restore.
+local bp_restore_pending = false
+local bp_autocmd_registered = false
 local function restore_breakpoints_when_ready()
-  if restored then
-    return
-  end
+  bp_restore_pending = true
   if package.loaded["dap"] then
-    restored = true
+    bp_restore_pending = false
     restore_breakpoints()
     return
   end
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "LazyLoad",
-    callback = function(ev)
-      if ev.data == "nvim-dap" and not restored then
-        restored = true
-        -- schedule: let dap finish its own setup first
-        vim.schedule(restore_breakpoints)
-      end
-    end,
-  })
+  if not bp_autocmd_registered then
+    bp_autocmd_registered = true
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(ev)
+        if ev.data == "nvim-dap" and bp_restore_pending then
+          bp_restore_pending = false
+          -- schedule: let dap finish its own setup first
+          vim.schedule(restore_breakpoints)
+        end
+      end,
+    })
+  end
 end
 
 -- ── Load ────────────────────────────────────────────────────────────────
@@ -421,6 +461,119 @@ function M.load()
 
   refresh_sidebar()
   return true
+end
+
+-- ── Sessions API ────────────────────────────────────────────────────────
+
+function M.current_session()
+  return session_name
+end
+
+-- Sorted session names for this project root
+function M.sessions()
+  local names = {}
+  for _, f in ipairs(vim.fn.glob(store_dir .. "/*.json", true, true)) do
+    table.insert(names, vim.fn.fnamemodify(f, ":t:r"))
+  end
+  table.sort(names)
+  return names
+end
+
+-- Close all project buffers. Refuses (returns false) if any has unsaved
+-- changes -- switch must not lose work or half-close the session.
+local function close_project_buffers()
+  local bufs = {}
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if is_project_buf(buf) then
+      if vim.bo[buf].modified then
+        vim.notify(
+          "self_session: unsaved changes in "
+            .. vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t")
+            .. " -- write it first",
+          vim.log.levels.WARN
+        )
+        return false
+      end
+      table.insert(bufs, buf)
+    end
+  end
+  vim.cmd("enew") -- land somewhere safe before deleting
+  for _, buf in ipairs(bufs) do
+    pcall(vim.api.nvim_buf_delete, buf, {})
+  end
+  return true
+end
+
+local function clear_state()
+  for _, key in ipairs(vim.tbl_keys(mark_extmarks)) do
+    remove_sign(key)
+  end
+  state = { buffers = {}, active = nil, marks = {}, breakpoints = {} }
+  mark_extmarks = {}
+  pending_cursor = {}
+end
+
+-- Switch to an existing session: persist the current one, close its
+-- buffers, load the target. Autosave then targets the new session.
+function M.switch(name)
+  if not valid_session_name(name) then
+    vim.notify("self_session: invalid session name (letters, digits, . _ -)", vim.log.levels.ERROR)
+    return
+  end
+  if name == session_name then
+    vim.notify("self_session: already on '" .. name .. "'", vim.log.levels.INFO)
+    return
+  end
+  if vim.fn.filereadable(store_dir .. "/" .. name .. ".json") == 0 then
+    vim.notify("self_session: no session '" .. name .. "' (create with :SelfSessionNew)", vim.log.levels.WARN)
+    return
+  end
+  M.save()
+  if not close_project_buffers() then
+    return
+  end
+  clear_state()
+  session_name = name
+  store_file = store_dir .. "/" .. session_name .. ".json"
+  write_active()
+  M.load()
+  refresh_sidebar()
+  vim.notify("self_session: switched to '" .. name .. "'")
+end
+
+-- "Save as": the current working set (buffers, marks, breakpoints) becomes
+-- a NEW named session, which becomes active. The previous session keeps its
+-- last saved state.
+function M.new_session(name)
+  if not valid_session_name(name) then
+    vim.notify("self_session: invalid session name (letters, digits, . _ -)", vim.log.levels.ERROR)
+    return
+  end
+  if vim.fn.filereadable(store_dir .. "/" .. name .. ".json") == 1 then
+    vim.notify("self_session: '" .. name .. "' exists -- use :SelfSessionSwitch", vim.log.levels.WARN)
+    return
+  end
+  M.save() -- final save of the outgoing session
+  session_name = name
+  store_file = store_dir .. "/" .. session_name .. ".json"
+  write_active()
+  M.save(true) -- current working set becomes the new session
+  refresh_sidebar()
+  vim.notify("self_session: started session '" .. name .. "'")
+end
+
+function M.delete_session(name)
+  if name == session_name then
+    vim.notify("self_session: cannot delete the active session", vim.log.levels.ERROR)
+    return
+  end
+  local f = store_dir .. "/" .. name .. ".json"
+  if vim.fn.filereadable(f) == 0 then
+    vim.notify("self_session: no session '" .. name .. "'", vim.log.levels.WARN)
+    return
+  end
+  os.remove(f)
+  vim.notify("self_session: deleted '" .. name .. "'")
 end
 
 -- ── Marks API ───────────────────────────────────────────────────────────
@@ -611,8 +764,55 @@ function M.setup()
     end
   end, { desc = "name project mark (M{a-z})" })
 
-  vim.api.nvim_create_user_command("SelfSessionSave", M.save, {})
-  vim.api.nvim_create_user_command("SelfSessionLoad", M.load, {})
+  vim.api.nvim_create_user_command("SelfSessionSave", function()
+    M.save()
+  end, {})
+  vim.api.nvim_create_user_command("SelfSessionLoad", function()
+    M.load()
+  end, {})
+
+  local function complete_sessions(arglead)
+    return vim.tbl_filter(function(n)
+      return vim.startswith(n, arglead)
+    end, M.sessions())
+  end
+  vim.api.nvim_create_user_command("SelfSessionNew", function(o)
+    M.new_session(o.args)
+  end, { nargs = 1, desc = "Name current working set as a new session" })
+  vim.api.nvim_create_user_command("SelfSessionSwitch", function(o)
+    if o.args ~= "" then
+      M.switch(o.args)
+      return
+    end
+    local names = M.sessions()
+    if #names <= 1 then
+      vim.notify("self_session: no other sessions (create with :SelfSessionNew)", vim.log.levels.INFO)
+      return
+    end
+    vim.ui.select(names, {
+      prompt = "Switch to session:",
+      format_item = function(n)
+        return n == session_name and (n .. " (active)") or n
+      end,
+    }, function(choice)
+      if choice and choice ~= session_name then
+        M.switch(choice)
+      end
+    end)
+  end, { nargs = "?", complete = complete_sessions, desc = "Switch project session" })
+  vim.api.nvim_create_user_command("SelfSessionDelete", function(o)
+    M.delete_session(o.args)
+  end, { nargs = 1, complete = complete_sessions })
+  vim.api.nvim_create_user_command("SelfSessionList", function()
+    local lines = {}
+    for _, n in ipairs(M.sessions()) do
+      table.insert(lines, (n == session_name and "* " or "  ") .. n)
+    end
+    if #lines == 0 then
+      lines = { "(no sessions saved yet)" }
+    end
+    vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "self_session" })
+  end, {})
 end
 
 return M

@@ -27,7 +27,7 @@ local function save_all()
 end
 map("n", "<M-s>", save_all, { desc = "save file + session" })
 map("i", "<M-s>", function() vim.cmd("stopinsert") save_all() end, { desc = "save file + session" })
-map("n", "<M-l>", function() require("self_session").load() end, { desc = "load session" })
+map("n", "<M-l>", "<cmd>SelfSessionSwitch<CR>", { desc = "switch session" })
 
 
 map("n", "<M-/>", "gcc", { desc = "comment", remap = true})
