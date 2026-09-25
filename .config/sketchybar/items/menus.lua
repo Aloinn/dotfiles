@@ -1,6 +1,7 @@
 local colors = require("colors")
 local icons = require("icons")
 local settings = require("settings")
+local notch = require("helpers.notch")
 
 local menu_watcher = sbar.add("item", {
   drawing = false,
@@ -33,7 +34,7 @@ for i = 1, max_items, 1 do
   menu_items[i] = menu
 end
 
-sbar.add("bracket", { '/menu\\..*/' }, {
+local menu_bracket = sbar.add("bracket", { '/menu\\..*/' }, {
   background = { color = colors.bg1 }
 })
 
@@ -46,13 +47,33 @@ local function update_menus(env)
   sbar.exec("$CONFIG_DIR/helpers/menus/bin/menus -l", function(menus)
     sbar.set('/menu\\..*/', { drawing = false })
     menu_padding:set({ drawing = true })
-    id = 1
+
+    -- Left-stack x cursor: fixed items (apple + slack + pads) sit before
+    -- the menus. Track estimated x so the first menu item that would
+    -- slide under the notch gets padded past it instead.
+    local x = notch.left_fixed_width
+    local id = 1
+    local wrapped = false
     for menu in string.gmatch(menus, '[^\r\n]+') do
       if id < max_items then
-        menu_items[id]:set( { label = menu, drawing = true } )
+        local w = notch.estimate_text_width(menu, id == 1)
+        local jump = notch.jump(x, w)
+        if jump > 0 then wrapped = true end
+        menu_items[id]:set({
+          label = menu,
+          drawing = true,
+          padding_left = settings.paddings + jump,
+        })
+        x = x + w + jump + 2 * settings.paddings
       else break end
       id = id + 1
     end
+
+    -- A solid bracket would paint a band across the notch gap; drop it
+    -- whenever the menu row wraps around the notch.
+    menu_bracket:set({
+      background = { color = wrapped and colors.transparent or colors.bg1 }
+    })
   end)
 end
 
