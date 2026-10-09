@@ -8,7 +8,9 @@
 set -u
 
 HOST="${1:-${MESHCLAW_HOST:-dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com}}"
-REMOTE_FILE="${MESHCLAW_REMOTE_FILE:-~/.meshclaw/notifications.jsonl}"
+# notifications.jsonl = dashboard bell; turns.jsonl = one line per finished
+# chat turn (written by the gateway Stop hook ~/.meshclaw/hooks/turn-notify.py).
+REMOTE_FILE="${MESHCLAW_REMOTE_FILE:-~/.meshclaw/notifications.jsonl ~/.meshclaw/turns.jsonl}"
 STATE_DIR="$HOME/.local/state/meshclaw"
 COUNT_FILE="$STATE_DIR/unread"
 RETRY_SECS=15
@@ -40,6 +42,7 @@ while true; do
       "$HOST" "tail -n0 -F $REMOTE_FILE" |
   while IFS= read -r line; do
     [[ -n "$line" ]] || continue
+    [[ "$line" == "==> "* ]] && continue  # tail's per-file headers
     log "notification: ${line:0:120}"
     bump
   done
