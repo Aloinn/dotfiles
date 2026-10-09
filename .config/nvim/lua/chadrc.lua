@@ -5,7 +5,13 @@ local M = {
         tabufline = { enabled = false},
         statusline = {
             theme = "vscode_colored",
-            -- order = { "mode", "%F", "git", "%=", "lsp_msg", "%=", "lsp", "cwd" },
+            -- vscode order + "dap" (JVM/debug-session indicator, hidden when none)
+            order = { "mode", "file", "git", "%=", "lsp_msg", "%=", "dap", "diagnostics", "lsp", "cursor", "cwd" },
+            modules = {
+                dap = function()
+                    return require("utils.dap_status").statusline()
+                end,
+            },
         }
     },
     base46 = {

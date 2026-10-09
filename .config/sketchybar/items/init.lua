@@ -1,5 +1,6 @@
 require("items.apple")
 require("items.slack")
+require("items.meshclaw")
 require("items.menus")
 require("items.spaces")
 require("items.calendar")

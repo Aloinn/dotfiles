@@ -62,11 +62,12 @@ return {
             mode = "n",
             body = "<leader>te",
             hint = [[
+ JVM:    %{jvm}
  Run:    _m_: test method  _c_: test class   _d_: debug method
- Break:  _b_: toggle       _B_: conditional  _x_: clear all
+ Break:  _b_: toggle       _B_: conditional
  Step:   _]_: over  _}_: into  _[_: out  _g_: continue (go)
  Insp:   _?_: hover  _r_: repl  _u_: dap-ui
- _X_: terminate session    <leader>te: exit test mode
+ _X_: terminate session    _<leader>te_ / _<Esc>_: exit test mode
 ]],
             config = {
                 color = "pink",
@@ -74,6 +75,11 @@ return {
                 hint = {
                     position = "bottom",
                     float_opts = { border = "rounded" },
+                    funcs = {
+                        jvm = function()
+                            return require("utils.dap_status").hint()
+                        end,
+                    },
                 },
                 -- UI lifecycle is bound to the MODE, not to sessions:
                 -- open on enter, close on exit. Session start/stop and
@@ -98,7 +104,8 @@ return {
                 { "B", function()
                     dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
                 end, { desc = "conditional" } },
-                { "x", function() dap.clear_breakpoints() end, { desc = "clear all" } },
+                -- (clear-all lives on <leader>tx only; removed from the
+                -- hydra so a stray x can't wipe every breakpoint)
                 -- stepping (while paused)
                 { "]", function() dap.step_over() end, { desc = "over" } },
                 { "}", function() dap.step_into() end, { desc = "into" } },
@@ -110,8 +117,24 @@ return {
                 { "u", function() dapui.toggle() end, { desc = "dap-ui" } },
                 -- session
                 { "X", function() dap.terminate() end, { desc = "terminate" } },
+                -- exit: pink hydras are layers, so re-pressing the body
+                -- (<leader>te) just re-invoked the global mapping instead of
+                -- exiting. An explicit exit head shadows it while active.
+                { "<leader>te", nil, { exit = true, desc = "exit" } },
+                { "<Esc>", nil, { exit = true, desc = false } },
             },
         })
+
+        -- Keep the statusline JVM indicator in sync with session state.
+        local function redraw()
+            vim.schedule(function()
+                vim.cmd.redrawstatus({ bang = true })
+            end)
+        end
+        for _, ev in ipairs({ "event_initialized", "event_stopped", "event_continued",
+            "event_terminated", "event_exited", "disconnect" }) do
+            dap.listeners.after[ev]["jvm-status"] = redraw
+        end
 
         -- Auto-enter test mode when a breakpoint hits; auto-exit + close
         -- On breakpoint hit: enter TEST mode if not already in it. Track
