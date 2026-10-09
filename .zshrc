@@ -348,4 +348,4 @@ alias c3="kitten ssh -t -o SendEnv=TERM dev-dsk-alainlam-2a-d7febfa4.us-west-2.a
 alias c2="kitten ssh dev-dsk-alainlam-2a-d7febfa4.us-west-2.amazon.com"
 alias c="ssh dev-dsk-alainlam-2c-cfa72de5.us-west-2.amazon.com"
 alias ch="cli-chess"
-alias midi="cd ~/dotfiles/miditui"
+alias midi="cd ~/miditui"
