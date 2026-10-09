@@ -1,3 +1,6 @@
 [submodule "miditui"]
 	path = miditui
 	url = https://github.com/Aloinn/miditui
+[submodule "tpm"]
+	path = .config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
