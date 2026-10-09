@@ -1,0 +1,3 @@
+[submodule "miditui"]
+	path = miditui
+	url = https://github.com/Aloinn/miditui
