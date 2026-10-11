@@ -442,6 +442,15 @@
                             "to": [{ "key_code": "end" }]
                         }
                     ]
+                },
+                {
+                    "identifiers": { "is_keyboard": true },
+                    "simple_modifications": [
+                        {
+                            "from": { "key_code": "f4" },
+                            "to": [{ "key_code": "vk_none" }]
+                        }
+                    ]
                 }
             ],
             "fn_function_keys": [
