@@ -440,6 +440,14 @@
                         {
                             "from": { "key_code": "page_up" },
                             "to": [{ "key_code": "end" }]
+                        },
+                        {
+                            "from": { "key_code": "page_down" },
+                            "to": [{ "key_code": "end" }]
+                        },
+                        {
+                            "from": { "key_code": "delete_forward" },
+                            "to": [{ "key_code": "home" }]
                         }
                     ]
                 },
@@ -447,8 +455,20 @@
                     "identifiers": { "is_keyboard": true },
                     "simple_modifications": [
                         {
-                            "from": { "key_code": "f4" },
-                            "to": [{ "key_code": "vk_none" }]
+                            "from": { "apple_vendor_top_case_key_code": "keyboard_fn" },
+                            "to": [{ "key_code": "left_command" }]
+                        },
+                        {
+                            "from": { "key_code": "left_command" },
+                            "to": [{ "apple_vendor_top_case_key_code": "keyboard_fn" }]
+                        },
+                        {
+                            "from": { "key_code": "page_up" },
+                            "to": [{ "key_code": "f13" }]
+                        },
+                        {
+                            "from": { "key_code": "right_option" },
+                            "to": [{ "key_code": "f20" }]
                         }
                     ]
                 }
