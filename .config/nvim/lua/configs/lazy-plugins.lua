@@ -24,6 +24,7 @@ require("lazy").setup({
     require("plugins.scrollbar"),
     require("plugins.smoothscroll"),
     require("plugins.amazonbrowse"),
+    require("plugins.scat"),
     require("plugins.outline"),
     require("plugins.illuminate"),
     require("plugins.indent"),
