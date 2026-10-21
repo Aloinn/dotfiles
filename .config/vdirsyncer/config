@@ -1,0 +1,19 @@
+[general]
+status_path = "~/.local/share/vdirsyncer/status/"
+
+[pair icloud]
+a = "icloud_local"
+b = "icloud_remote"
+collections = ["from b"]
+metadata = ["displayname", "color"]
+
+[storage icloud_local]
+type = "filesystem"
+path = "~/.local/share/calendars/icloud/"
+fileext = ".ics"
+
+[storage icloud_remote]
+type = "caldav"
+url = "https://caldav.icloud.com/"
+username = "onealainn@gmail.com"
+password = "vblg-dlmz-jjhs-ffec"
